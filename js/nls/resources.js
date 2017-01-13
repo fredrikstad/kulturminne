@@ -67,6 +67,17 @@ define({
             attachmentHeaderText: "Attachments", //attachment header Text
             unknownPopupAttachment: "FILE" // displayed for attached file having unknown extension
         },
+        locator: {
+            addressText: "Address:", // Shown as a title for a group of addresses returned on performing unified search
+            usngText: "USNG", // Shown as a title for a group of USNG values returned on performing unified search
+            mgrsText: "MGRS", // Shown as a title for a group of MGRS values returned on performing unified search
+            latLongText: "Latitude/Longitude", // Shown as a title for a group of latitude longitude values returned on performing unified search
+            invalidSearch: "No results found", // Shown in the address container when no results are returned on performing unified search
+            locatorPlaceholder: "Enter an address to search", // Shown in the address container textbox as a placeholder
+            locationOutOfExtent: "Located address is out of basemap extent", // Shown as an alert when the selected address in the search result is out of basemap extent
+            searchButtonTooltip: "Search", // Tooltip for search button
+            clearButtonTooltip: "Clear search value" // Tooltip for Geocoder clear button
+        },
         mapViewer: {
             zoomInToolTip: "Zoom in", // Display tool-tip on command button to zoom in map
             zoomOutToolTip: "Zoom out" // Display tool-tip on command button to zoom out map
@@ -78,13 +89,14 @@ define({
         },
         dataviewer: {
             noIssuesReported: "No reports available", // Appears when no issues are available in current extent
-            noFeatureGeometry: "Feature cannot be displayed", // Appears when user selects/activates a feature and geometry is available for that
+            noFeatureGeometry: "Feature cannot be displayed", // Appears when user selects/activates a feature and geometry is not available for that
             ascendingFlagTitle: "Sort in ascending order", // Appears as a label for Ascending flag as a sorting option
             descendingFlagTitle: "Sort in descending order", // Appears as a label for Descending flag as a sorting option
             filterLabel: "Filter", // Appears as a label for Filter container
             valueRadioButtonLabel: "Value", // Appears as a label for 'Value' radio button in filter container
             uniqueRadioButtonLabel: "Unique", // Appears as a label for 'Unique' radio button in filter container
             selectLayerToBegin: "Select a category to get started", // for showing default message on application load
+            submitReportButtonText: "Add new", // shown to add a new feature in the data viewer header.
             layerFeatureCount: "${selectedFeatureCount} selected / ${featureCount} records" // Appears beside operational layer name to display count of total & selected feature
         },
         timeSlider: {
@@ -104,8 +116,24 @@ define({
             selectFileText: "Browse", // Command button to open a dialog box to select file(s) to be attached
             attachmentSelectedMsg: "attachment(s) selected", // Shown besides the select file button indicating the number of files attached
             attachmentHeaderText: "Attachments", //attachment header Text
-            addRecordText: "Add Record", // shown to add record in comments tab under details panel
-            unknownCommentAttachment: "FILE" // displayed for attached file having unknown extension
+            unknownCommentAttachment: "FILE", // displayed for attached file having unknown extension
+            addRecordText: "Add Record" // shown to add record in comments tab under details panel
+        },
+        inspection: {
+            inspectionsFormSubmitButton: "Save", // Displayed on submit button to display inspections
+            inspectionsFormCancelButton: "Cancel", // Displayed on cancel button to cancel inspections
+            errorInSubmittingInspection: "Edits could not be saved.", // Shown when user is unable to add inspections
+            emptyInspectionMessage: "Value required", // Shown when user submits a inspection without any text/character
+            placeHolderText: "", // Shown as a placeholder in inspections textbox
+            noInspectionsAvailableText: "No records available", // Shown when no inspections are available for the selected issue
+            remainingTextCount: "${0} character(s) remain", // Shown below the inspections textbox indicating the number of characters that can be added
+            showNoText: "No", // Shown when inspections character limit is exceeded
+            selectAttachments: "Attachments", // Appears above 'Select file' button indicating option to attach files while adding inspections
+            selectFileText: "Browse", // Command button to open a dialog box to select file(s) to be attached
+            attachmentSelectedMsg: "attachment(s) selected", // Shown besides the select file button indicating the number of files attached
+            attachmentHeaderText: "Attachments", //attachment header Text
+            unknownInspectionAttachment: "FILE", // displayed for attached file having unknown extension
+            addRecordText: "Add Record" // shown to add record in inspections tab under details panel
         },
         main: {
             noGroup: "No group configured" // Appears when no group is configured
@@ -131,7 +159,10 @@ define({
             filterInShowSelectedEditModeAlert: "Filters unavailable in 'Show Selected' mode." // Displayed when user tries to applies filter in 'Show Selected' mode
         },
         detailsPanel: {
-            editContentText: "Edit record" // Displayed on hover of edit toggle button
+            editContentText: "Edit record", // Displayed on hover of edit toggle button
+            selectFeatureMessage: "Select a feature to get started.",
+            delete: "Delete",
+            deleteAttachmentError: "The attachment was not deleted"
         },
         signOutPage: {
             signOutMessage: "You've been successfully signed out", // Appears when user is successfully signed-out from application

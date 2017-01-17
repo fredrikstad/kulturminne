@@ -61,6 +61,12 @@ define([
         _layerHasReportedByField: false,
         selectedLayer: null,
         _featureAttributes: {},
+        fileAttachmentList: null, // list of files that is been attached
+        _fileInputIcon: null, // browse button to attach files
+        _fileAttachmentCounter: 1, // to display number of attachments that is been added or removed
+        _totalFileAttachedCounter: 0, // to store total number of file that is been attached
+        _fileAttachedCounter: 0, // to store number of files that is been attached
+        _fileFailedCounter: 0, // to store number of files that is been failed to attached
 
         /**
         * This function is called when widget is constructed.
@@ -114,6 +120,9 @@ define([
             this._filterLayerFields();
             // Sort fields array by type
             this._sortedTypeFormElement();
+            // create attachment button if selected layer has attachments
+            this._createAttachments();
+            this.appUtils.hideLoadingIndicator();
         },
 
         /**
@@ -228,6 +237,7 @@ define([
                 $('#tabContent').animate({
                     scrollTop: erroneousFields[0].offsetTop
                 }, 1000);
+                this.appUtils.hideLoadingIndicator();
             } else {
                 //get confirmation from user if multiple features are selected to update
                 if (this.selectedFeatures.length > 1) {
@@ -245,9 +255,39 @@ define([
                     //Show loading indicator
                     this.appUtils.showLoadingIndicator();
                     // Add the popup to the popup table
-                    this.selectedLayer.applyEdits(null, featureArray, null, lang.hitch(this, function () {
-                        //send last feature to the handler
-                        this.onPopupFormSubmitted(this.selectedFeatures[this.selectedFeatures.length - 1]);
+                    this.selectedLayer.applyEdits(null, featureArray, null, lang.hitch(this, function (addResult, updateResult, deleteResult) {
+                        var fileList, i, userFormNode;
+                        //for update we only need updateResult parameter
+                        if (updateResult && updateResult.length > 0 && updateResult[0].success) {
+                            userFormNode = dom.byId("addPopupAttachmentsWrapperContainer");
+                            // if layer has attachments then add those attachments
+                            if (this.selectedLayer.hasAttachments && query(".esriCTFileToSubmit", userFormNode).length > 0) {
+                                // get all the attachments
+                                fileList = query(".esriCTFileToSubmit", userFormNode);
+                                // reset fileAttached and failed counter
+                                this._fileAttachedCounter = 0;
+                                this._fileFailedCounter = 0;
+                                // set total file attached counter
+                                this._totalFileAttachedCounter = fileList.length;
+                                for (i = 0; i < fileList.length; i++) {
+                                    // handle success and error callback for add attachments
+                                    this.selectedLayer.addAttachment(updateResult[0].objectId, fileList[i],
+                                        lang.hitch(this, this._onAttachmentUploadComplete),
+                                        lang.hitch(this, this._onAttachmentUploadFailed));
+                                }
+                            } else {
+                                //send last feature to the handler
+                                this.onPopupFormSubmitted(this.selectedFeatures[this.selectedFeatures.length - 1]);
+                            }
+
+                            //Hide loading indicator
+                            this.appUtils.hideLoadingIndicator();
+                        } else {
+                            //Hide loading indicator
+                            this.appUtils.hideLoadingIndicator();
+                            // Show error message in header
+                            this._showHeaderMessageDiv();
+                        }
                     }), lang.hitch(this, function (err) {
                         //Hide loading indicator
                         this.appUtils.hideLoadingIndicator();
@@ -460,6 +500,170 @@ define([
         },
 
         /**
+        * Create attachment button while updating popup
+        * @memberOf widgets/details-panel/popup-form
+        */
+        _createAttachments: function () {
+            var fileInput, formContent, fileChange, fileAttachmentContainer, fileContainer, popupFormAttachmentSectionLabel, userFormNode;
+            // If layer has hasAttachments true
+            if (this.selectedLayer.hasAttachments) {
+                userFormNode = dom.byId("addPopupAttachmentsWrapperContainer");
+                // Create container for hasAttachment
+                formContent = domConstruct.create("div", {
+                    "class": "form-group hasAttachment esriCTGeoFormAttachmentLabel"
+                }, userFormNode);
+                if (this.config.popupFormAttachmentSectionLabel) {
+                    if (this.config.popupFormAttachmentSectionLabel === "Attachments") {
+                        popupFormAttachmentSectionLabel = this.config.i18n.geoform.selectAttachments;
+                    } else {
+                        popupFormAttachmentSectionLabel = this.config.popupFormAttachmentSectionLabel;
+                    }
+                } else {
+                    popupFormAttachmentSectionLabel = this.config.i18n.geoform.selectAttachments;
+                }
+                // Select attachment label
+                domConstruct.create("label", {
+                    "innerHTML": popupFormAttachmentSectionLabel,
+                    "id": "popupFormAttachmentTitleLabel",
+                    "class": "esriCTGeoFormTitles"
+                }, formContent);
+                domConstruct.create("br", {}, formContent);
+                // Create div for Attachment button
+                fileContainer = domConstruct.create("div", { "class": "esriCTFileButtonContainer", "title": this.config.i18n.geoform.selectFileText }, formContent);
+                this._fileInputIcon = domConstruct.create("button", {
+                    "type": "button",
+                    "innerHTML": this.config.i18n.geoform.selectFileText,
+                    "class": "btn btn-default esriCTAddCommentAttachmentsButton esriCTEllipsis"
+                }, fileContainer);
+                // Show photo selected count
+                domConstruct.create("div", {
+                    "id": "attachmentSelectedCount",
+                    "class": "esriCTAttachmentSelectedCount"
+                }, formContent);
+                fileAttachmentContainer = domConstruct.create("div", {
+                    "class": "container esriCTAttachmentContainer"
+                }, formContent);
+                this.fileAttachmentList = domConstruct.create("div", {
+                    "class": "row esriCTFileAttachMenuList"
+                }, fileAttachmentContainer);
+                // Create input container for attachments
+                fileInput = domConstruct.create("input", {
+                    "type": "file",
+                    "accept": "image/*",
+                    "name": "attachment",
+                    "style": {
+                        "height": "38px",
+                        "width": "80px"
+                    },
+                    "class": "esriCTPointerCursor"
+                }, domConstruct.create("form", {
+                    "id": "popupFormAttachment" + this._fileAttachmentCounter++,
+                    "class": "esriCTHideFileInputUI"
+                }, fileContainer));
+                // domClass.add(fileInput, "esriCTPointerCursor");
+                // Handle change event for file control
+                fileChange = on(fileInput, "change", lang.hitch(this, function (evt) {
+                    fileChange.remove();
+                    this._onFileSelected(evt);
+                }));
+            }
+        },
+
+        /**
+         * Show selected file on popup form and create new fileControl so that multiple files can be selected.
+         * @param{object} evt - Event object which will be generated on file input change event.
+         * @memberOf widgets/details-panel/popup-form
+         */
+        _onFileSelected: function (evt) {
+            var newFormControl, fileInput, fileName, fileChange, alertHtml, target = evt.currentTarget || evt.srcElement;
+            if (target && target.value) {
+                fileName = target.value;
+                fileName = fileName.split("\\")[fileName.split("\\").length - 1];
+            } else {
+                fileName = "";
+            }
+            //once file is selected change class so that the selected file will be added as attachment
+            domClass.replace(target.parentNode, "esriCTFileToSubmit", "esriCTHideFileInputUI");
+            domStyle.set(target.parentNode, "display", "none");
+            //Add dismiss-able alert for each file, and show file name and file size in it.
+            alertHtml = "<div id=" + target.parentNode.id + "_Close" + " class=\"esriCTFileAlert alert alert-dismissable alert-success\">";
+            alertHtml += "<button type=\"button\" class=\"close\" data-dismiss=\"alert\">" + "X" + "</button>";
+            alertHtml += "<span>" + fileName + "</span>";
+            alertHtml += "</div>";
+            alertHtml = domConstruct.place(alertHtml, this.fileAttachmentList, "last");
+            //if file is removed then
+            //replace the class from esriCTFileToSubmit to esriCTHideFileInputUI and update the file selected count
+            $('#' + target.parentNode.id + "_Close").bind('closed.bs.alert', lang.hitch(this, function (evt) {
+                domClass.replace(dom.byId(evt.target.id.split("_")[0]), "esriCTHideFileInputUI", "esriCTFileToSubmit");
+                this._updateAttachmentCount();
+            }));
+            //once filename is shown, update file attachments count
+            this._updateAttachmentCount();
+            //Check if file input container is present
+            if ($(".hasAttachment")[0]) {
+                newFormControl = domConstruct.create("form", { "id": "popupFormAttachment" + this._fileAttachmentCounter++, "class": "esriCTHideFileInputUI" }, $(".hasAttachment")[0]);
+                //create new file input control so that multiple files can be attached
+                fileInput = domConstruct.create("input", {
+                    "type": "file",
+                    "accept": "image/*",
+                    "name": "attachment",
+                    "style": { "height": dojo.coords(this._fileInputIcon).h + "px", "width": dojo.coords(this._fileInputIcon).w + "px" }
+                }, newFormControl);
+                //place the newly created file-input control after file selection icon
+                domConstruct.place(newFormControl, this._fileInputIcon, "after");
+                //handle change event for file control if file size is
+                fileChange = on(fileInput, "change", lang.hitch(this, function (evt) {
+                    fileChange.remove();
+                    this._onFileSelected(evt);
+                }));
+            }
+        },
+
+        /**
+        * This function will update attachment count based on count will show/hide message in popup form
+        * @memberOf widgets/details-panel/popup-form
+        */
+        _updateAttachmentCount: function () {
+            var photoSelectedDiv = dom.byId("attachmentSelectedCount"), selectedAttachmentsCount;
+            if (photoSelectedDiv) {
+                selectedAttachmentsCount = query(".alert-dismissable", this.fileAttachmentList).length;
+                if (selectedAttachmentsCount > 0) {
+                    domAttr.set(photoSelectedDiv, "innerHTML", selectedAttachmentsCount + " " + this.config.i18n.geoform.attachmentSelectedMsg);
+                } else {
+                    domAttr.set(photoSelectedDiv, "innerHTML", "");
+                }
+            }
+        },
+
+        /**
+        * Callback handler for attachment upload Complete event
+        * @memberOf widgets/details-panel/popup-form
+        */
+        _onAttachmentUploadComplete: function () {
+            this._fileAttachedCounter++;
+            this._updateFileAttachedCounter();
+        },
+
+        /**
+        * Callback handler for attachment upload failed event
+        * @memberOf widgets/details-panel/popup-form
+        */
+        _onAttachmentUploadFailed: function () {
+            this._fileFailedCounter++;
+            this._updateFileAttachedCounter();
+        },
+
+        /**
+        * On attachment upload
+        * @memberOf widgets/details-panel/popup-form
+        */
+        _updateFileAttachedCounter: function () {
+            if (this._totalFileAttachedCounter === (this._fileAttachedCounter + this._fileFailedCounter)) {
+                this.onPopupFormSubmitted(this.selectedFeatures[this.selectedFeatures.length - 1]);
+            }
+        },
+
+        /**
         * Create range help text for elements.
         * @param{object} currentField, object of current field in the info pop
         * @param{object} formContent, Parent Node of the field inside geo form
@@ -653,7 +857,7 @@ define([
                     var field = null, hasDomainValue, hasDefaultValue, fieldAttribute;
                     hasDomainValue = selectedType.domains[currentInput.name];
                     hasDefaultValue = selectedType.templates[0].prototype.attributes[currentInput.name];
-                    if ((hasDomainValue && hasDomainValue.type !== "inherited") || (hasDefaultValue && !currentInput.typeField) || (hasDefaultValue === 0 && !currentInput.typeField)) {
+                    if ((hasDomainValue && hasDomainValue.type !== "inherited") || (hasDefaultValue && !currentInput.typeField)) {
                         currentInput.isTypeDependent = true;
                     }
                     // condition to filter out fields independent of subtypes

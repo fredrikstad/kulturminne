@@ -17,7 +17,7 @@
 */
 define([
     "dojo/_base/declare",
-    "dojo/text!./templates/comments.html",
+    "dojo/text!./templates/prikk.html",
     "dijit/_WidgetBase",
     "dijit/_TemplatedMixin",
     "dijit/_WidgetsInTemplateMixin",
@@ -27,6 +27,7 @@ define([
     "dojo/_base/array",
     "esri/tasks/RelationshipQuery",
     "esri/tasks/query",
+    "esri/request",
     "dojo/dom-construct",
     "dojo/dom-class",
     "dojo/dom",
@@ -34,7 +35,7 @@ define([
     "dojo/dom-style",
     "esri/dijit/PopupTemplate",
     "dijit/layout/ContentPane",
-    "widgets/details-panel/comment-form",
+    "widgets/details-panel/prikk-form",
     "dojo/_base/array",
     "dojo/DeferredList",
     "dojo/query",
@@ -51,6 +52,7 @@ define([
     array,
     RelationshipQuery,
     Query,
+    esriRequest,
     domConstruct,
     domClass,
     dom,
@@ -116,9 +118,6 @@ define([
                             if (this._commentsTable && this._commentsTable.url) {
                                 if (currentTable.url === this._commentsTable.url && currentTable.popupInfo) {
                                     this._commentPopupTable = currentTable;
-                                    if (currentTable.layerDefinition && currentTable.layerDefinition.definitionExpression) {
-                                        this._commentsTable.setDefinitionExpression(currentTable.layerDefinition.definitionExpression);
-                                    }
                                 }
                             }
                         }));
@@ -158,17 +157,12 @@ define([
         * @memberOf widgets/details-panel/comments
         */
         _fetchComments: function (graphic, parentDiv) {
-            var relatedQuery, currentID, commentsTableDefinitionExpression;
+            var relatedQuery, currentID;
             currentID = graphic.attributes[this.selectedOperationalLayer.objectIdField];
             relatedQuery = new RelationshipQuery();
             relatedQuery.outFields = ["*"];
             relatedQuery.relationshipId = this.selectedOperationalLayer.relationships[0].id;
             relatedQuery.objectIds = [currentID];
-            commentsTableDefinitionExpression = this._commentsTable.getDefinitionExpression();
-            //If table has definition expression set in web map then apply it
-            if (commentsTableDefinitionExpression && commentsTableDefinitionExpression !== null && commentsTableDefinitionExpression !== "") {
-                relatedQuery.definitionExpression = commentsTableDefinitionExpression;
-            }
             // Query for related features and showing comments
             this.selectedOperationalLayer.queryRelatedFeatures(relatedQuery, lang.hitch(this, function (relatedFeatures) {
                 var commentsParentDiv, pThis, commentsContainerDiv, i, deferredListArr;
@@ -351,7 +345,7 @@ define([
         * @memberOf widgets/details-panel/comments
         **/
         _showAttachments: function (attachmentContainer, index) {
-            var fieldContent, i, attachmentWrapper, imageThumbnailContainer, imageThumbnailContent, imageContainer, fileTypeContainer, isAttachmentAvailable, imagePath, imageDiv;
+            var fieldContent, i, attachment, deleteAttachmentContainer, attachmentWrapper, imageThumbnailContainer, imageThumbnailContent, imageContainer, fileTypeContainer, isAttachmentAvailable, imagePath, imageDiv;
             //check if attachments found
             if (this._entireAttachmentsArr[index][1] && this._entireAttachmentsArr[index][1].length > 0) {
                 //Create attachment header text
@@ -359,7 +353,8 @@ define([
                 fieldContent = domConstruct.create("div", { "class": "esriCTThumbnailContainer" }, attachmentContainer);
                 // display all attached images in thumbnails
                 for (i = 0; i < this._entireAttachmentsArr[index][1].length; i++) {
-                    attachmentWrapper = domConstruct.create("div", {}, fieldContent);
+                    attachment = this._entireAttachmentsArr[index][1][i];
+                    attachmentWrapper = domConstruct.create("div", {"class": "esriCTThumbnailWrapper"}, fieldContent);
                     imageThumbnailContainer = domConstruct.create("div", { "class": "esriCTNonImageContainer", "alt": this._entireAttachmentsArr[index][1][i].url }, attachmentWrapper);
                     imageThumbnailContent = domConstruct.create("div", { "class": "esriCTNonImageContent" }, imageThumbnailContainer);
                     imageContainer = domConstruct.create("div", {}, imageThumbnailContent);
@@ -371,11 +366,49 @@ define([
                     this._fetchDocumentContentType(this._entireAttachmentsArr[index][1][i], fileTypeContainer);
                     this._fetchDocumentName(this._entireAttachmentsArr[index][1][i], imageThumbnailContainer);
                     on(imageThumbnailContainer, "click", lang.hitch(this, this._displayImageAttachments));
+                    //Create delete attachment button
+                    deleteAttachmentContainer = domConstruct.create("div", {
+                      "class": "esriCTDeleteAttachmentButton esriCTApplicationColor",
+                      "id": attachment.id,
+                      "innerHTML": this.appConfig.i18n.detailsPanel.delete
+                    }, attachmentWrapper);
+                    on(deleteAttachmentContainer, "click", lang.hitch(this, function () {
+                      this._deleteAttachment(attachment);
+                    }));
                 }
                 if (!isAttachmentAvailable) {
                     domClass.add(attachmentContainer, "hidden");
                 }
             }
+        },
+
+        /**
+        * Function to delete attachments
+        @param{object} attachment object
+        * @memberOf widgets/details-panel/comments
+        **/
+        _deleteAttachment: function(attachment) {
+          var requestUrl = attachment.url.split('/attachments/')[0] + '/deleteAttachments';
+          var deleteRequest = esriRequest({
+            url: requestUrl,
+            content: {
+              attachmentIds: attachment.id,
+              rollbackOnFailure:true,
+              f: "json"},
+            callbackParamName: "callback"
+          });
+          this.appUtils.showLoadingIndicator();
+          deleteRequest.then(lang.hitch(this, function (response) {
+            //console.log("Success: ", response);
+            commentsParentDiv = query(".esriCTcommentsParentDiv")[0];
+            domConstruct.empty(commentsParentDiv);
+            this._getAllAttachments();
+            this.appUtils.hideLoadingIndicator();
+          }), lang.hitch(this, function (error) {
+            //console.log("Error: ", error);
+            alert("Error: " + error);
+            this.appUtils.hideLoadingIndicator();
+          }));
         },
 
         /**
@@ -431,9 +464,6 @@ define([
                 domClass.add(this.addCommentsBtnWrapperContainer, "esriCTHidden");
                 this._createCommentForm(graphic, false);
                 domStyle.set(this.commentsContainer, "display", "none");
-                $('#tabContent').animate({
-                    scrollTop: 0
-                });
             }));
         },
 

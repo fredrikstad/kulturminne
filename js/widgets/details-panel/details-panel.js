@@ -24,7 +24,8 @@ define([
     "dijit/_TemplatedMixin",
     "dijit/_WidgetsInTemplateMixin",
     "dojo/_base/lang",
-    "widgets/details-panel/comments",
+    "widgets/details-panel/prikk",
+    "widgets/details-panel/inspections",
     "widgets/details-panel/media",
     "widgets/details-panel/popup",
     "dojo/dom-construct",
@@ -41,6 +42,7 @@ define([
     _WidgetsInTemplateMixin,
     lang,
     Comments,
+    Inspections,
     Media,
     PopupTab,
     domConstruct,
@@ -53,6 +55,7 @@ define([
         _popupWidgetObj: null, // to store object of popup widget
         _mediaWidgetObj: null, // to store object of media widget
         _commentsWidgetObj: null, // to store object of comments widget
+        _inspectionsWidgetObj: null, // to store object of inspections widget
         i18n: {}, // to store nls object
         isShowSelectedClicked: null, // to notify that show all option is clicked
         isShowAllClicked: null, // to notify that show all option is clicked
@@ -85,12 +88,13 @@ define([
             }
             this._attachTabEvents();
             this._initializePopupWidget();
-            this._initializeMediaWidget();
+            //this._initializeMediaWidget();
             this._initializeCommentsWidget();
+            this._initializeInspectionsWidget();
         },
 
         /**
-        * This function is used to attach click event to popup, media & comments tab
+        * This function is used to attach click event to popup, media, comments, & inspections tab
         * @memberOf widgets/details-panel/details-panel
         */
         _attachTabEvents: function () {
@@ -105,6 +109,11 @@ define([
                 dom.byId("tabContent").scrollTop = 0;
             }));
             on(dom.byId("commentsTab"), "click", lang.hitch(this, function () {
+                this.hideWebMapList();
+                //Scroll to top position
+                dom.byId("tabContent").scrollTop = 0;
+            }));
+            on(dom.byId("inspectionsTab"), "click", lang.hitch(this, function () {
                 this.hideWebMapList();
                 //Scroll to top position
                 dom.byId("tabContent").scrollTop = 0;
@@ -203,7 +212,7 @@ define([
                     "popupInfo": this.popupInfo,
                     "multipleFeatures": this.multipleFeatures
                 };
-                // Initialize comments widget
+                // Initialize media widget
                 this._mediaWidgetObj = new Media(mediaParameters, domConstruct.create("div", {}, dom.byId("mediaWrapperContainer")));
                 this._attachMediaTabEvents();
                 this._mediaWidgetObj.startup();
@@ -258,6 +267,51 @@ define([
         },
 
         /**
+        * This function is used to initialize inspections tab
+        * @memberOf widgets/details-panel/details-panel
+        */
+        _initializeInspectionsWidget: function () {
+            var inspectionsParameters;
+            //if no record is selected from table then hide all tabs
+
+            if (this.multipleFeatures.length === 1) {
+                // Initialize inpections widget
+                inspectionsParameters = {
+                    "appConfig": this.appConfig,
+                    "selectedFeatureSet": this.selectedFeatureSet,
+                    "selectedOperationalLayer": this.selectedOperationalLayer,
+                    "map": this.map,
+                    "appUtils": this.appUtils,
+                    "itemInfo": this.itemInfo,
+                    "multipleFeatures": this.multipleFeatures
+                };
+                this._inspectionsWidgetObj = new Inspections(inspectionsParameters, domConstruct.create("div", {}, dom.byId("inspectionsWrapperContainer")));
+                this._attachInspectionsEventListener();
+                this._inspectionsWidgetObj.startup();
+            } else {
+                this._hideDetailsPanelTab("inspections");
+            }
+            if (dom.byId("inspectionformContainer") && !domClass.contains(dom.byId("inspectionformContainer"), "esriCTHidden")) {
+                domClass.add(dom.byId("inspectionformContainer"), "esriCTHidden");
+            }
+        },
+
+        /**
+        * This function is used to attach event listener to inpections widget
+        * @memberOf widgets/details-panel/details-panel
+        */
+        _attachInspectionsEventListener: function () {
+            this._inspectionsWidgetObj.hideInspectionsTab = lang.hitch(this, function () {
+                this._hideDetailsPanelTab("inspections");
+            });
+
+            this._inspectionsWidgetObj.showInspectionsTab = lang.hitch(this, function () {
+                this._showDetailsPanelTab("inspections");
+                this._displayTabList();
+            });
+        },
+
+        /**
         * This function is used to destroy popup widget.
         * @memberOf widgets/details-panel/details-panel
         */
@@ -284,6 +338,16 @@ define([
         destroyCommentsWidget: function () {
             if (this._commentsWidgetObj) {
                 this._commentsWidgetObj.destroy();
+            }
+        },
+
+        /**
+        * This function is used to destroy inspections widget.
+        * @memberOf widgets/details-panel/details-panel
+        */
+        destroyInspectionsWidget: function () {
+            if (this._inspectionsWidgetObj) {
+                this._inspectionsWidgetObj.destroy();
             }
         },
 
@@ -326,7 +390,7 @@ define([
         },
 
         /**
-        * Display tab list if media or comment tab gets displayed
+        * Display tab list if media, comment, or inspection tab gets displayed
         * @memberOf widgets/details-panel/details-panel
         */
         _displayTabList: function () {

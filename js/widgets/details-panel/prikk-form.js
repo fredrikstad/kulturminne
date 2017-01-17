@@ -32,7 +32,7 @@ define([
     "esri/graphic",
     "dojo/dom-style",
     "dojo/dom-geometry",
-    "dojo/text!./templates/comment-form.html"
+    "dojo/text!./templates/prikk-form.html"
 ], function (
     declare,
     _WidgetBase,
@@ -206,7 +206,7 @@ define([
         * @memberOf widgets/details-panel/comment-form
         */
         _submitCommentForm: function () {
-            var featureData, editedFields = [], key, picker, datePicker, value, erroneousFields = [], primaryKeyField, foreignKeyField;
+            var featureData, editedFields = [], key, picker, datePicker, value, erroneousFields = [];
             erroneousFields = this._checkForFields();
             if (erroneousFields.length !== 0) {
                 // //scroll to that field if error exists
@@ -252,12 +252,12 @@ define([
                     editedFields.push(key);
                 }
 
+                this._primaryKeyField = this.selectedLayer.relationships[0].keyField;
+                this._foreignKeyField = this.commentTable.relationships[0].keyField;
+                if (this.item.attributes[this._primaryKeyField]) {
+                    featureData.attributes[this._foreignKeyField] = this.item.attributes[this._primaryKeyField];
+                }
                 if (this.addComments) {
-                    primaryKeyField = this.selectedLayer.relationships[0].keyField;
-                    foreignKeyField = this.commentTable.relationships[0].keyField;
-                    if (this.item.attributes[primaryKeyField]) {
-                        featureData.attributes[foreignKeyField] = this.item.attributes[primaryKeyField];
-                    }
                     this._addNewComments(featureData);
                 } else {
                     this._updateComments(featureData);
@@ -528,8 +528,6 @@ define([
                     }
                 }
             }
-            // Set hint text for range domain Value
-            this._createRangeText(currentField, formContent, fieldname);
             // If field has coded domain value and typeField set to true then create form elements for domain fields
             // else create form elements for non domain fields
             if (currentField.domain || currentField.typeField) {
@@ -537,6 +535,8 @@ define([
             } else {
                 this._createInputFormElements(currentField, formContent, fieldname);
             }
+            // Set hint text for range domain Value
+            this._createRangeText(currentField, formContent, fieldname);
         },
 
         /**
@@ -589,7 +589,7 @@ define([
                 // Create input container for attachments
                 fileInput = domConstruct.create("input", {
                     "type": "file",
-                    "accept": "image/*",
+                    "accept": "application/pdf,image/*,.doc,.docx",
                     "name": "attachment",
                     "style": {
                         "height": "38px",
@@ -610,10 +610,10 @@ define([
         },
 
         /**
-        * Show selected file on comment form and create new fileControl so that multiple files can be selected.
-        * @param{object} evt - Event object which will be generated on file input change event.
-        * @memberOf widgets/details-panel/comment-form
-        */
+         * Show selected file on comment form and create new fileControl so that multiple files can be selected.
+         * @param{object} evt - Event object which will be generated on file input change event.
+         * @memberOf widgets/details-panel/comment-form
+         */
         _onFileSelected: function (evt) {
             var newFormControl, fileInput, fileName, fileChange, alertHtml, target = evt.currentTarget || evt.srcElement;
             if (target && target.value) {
@@ -645,7 +645,7 @@ define([
                 //create new file input control so that multiple files can be attached
                 fileInput = domConstruct.create("input", {
                     "type": "file",
-                    "accept": "image/*",
+                    "accept": "application/pdf,image/*,.doc,.docx",
                     "name": "attachment",
                     "style": { "height": dojo.coords(this._fileInputIcon).h + "px", "width": dojo.coords(this._fileInputIcon).w + "px" }
                 }, newFormControl);
@@ -692,7 +692,7 @@ define([
             // if info pop has tooltip then create info popup hint text
             if (currentField.tooltip) {
                 domConstruct.create("p", {
-                    className: "help-block esriCTCommentsFormHintText",
+                    className: "help-block",
                     innerHTML: currentField.tooltip
                 }, formContent);
             }
@@ -1163,8 +1163,6 @@ define([
                     domAttr.set(this.inputContent, "value", defaultValue);
                     domClass.add(formContent, "has-success");
                     this._validateField({ 'target': this.inputContent }, currentField, true);
-                } else {
-                    this.inputContent.value = "";
                 }
             } else {
                 //check date field value if exists

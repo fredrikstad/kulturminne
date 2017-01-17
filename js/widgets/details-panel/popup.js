@@ -30,8 +30,10 @@ define([
     "dijit/layout/ContentPane",
     "widgets/details-panel/popup-form",
     "esri/tasks/query",
+    "esri/request",
     "dojo/_base/array",
     "esri/dijit/PopupTemplate",
+    "dojo/query",
     "dojo/domReady!"
 ], function (
     declare,
@@ -48,8 +50,10 @@ define([
     ContentPane,
     PopupForm,
     Query,
+    esriRequest,
     array,
-    PopupTemplate
+    PopupTemplate,
+    query
 ) {
     return declare([_WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin], {
         templateString: template,
@@ -84,7 +88,12 @@ define([
                 this.popupEditModeEnabled(false);
             } else {
                 //create edit popup form if multiple feature selected
-                this._createPopupForm();
+                //this._createPopupForm();
+                //Update 20161013: If multiple features are selected show the first feature
+                this._hidePanel(this.popupFormContainer);
+                this._showPanel(this.popupInfoParentContainer);
+                this._displayPopupContent(this.multipleFeatures[0]);
+                this.popupEditModeEnabled(false);
             }
         },
 
@@ -245,7 +254,7 @@ define([
         * @memberOf widgets/details-panel/popup
         **/
         _showAttachments: function (graphic, attachmentContainer) {
-            var objectID, fieldContent, imageDiv, imagePath, i, isAttachmentAvailable = false, imageThumbnailContainer, attachmentWrapper, imageThumbnailContent, imageContainer, fileTypeContainer;
+            var objectID, fieldContent, imageDiv, imagePath, i, isAttachmentAvailable = false, imageThumbnailContainer, attachment, deleteAttachmentContainer, attachmentWrapper, imageThumbnailContent, imageContainer, fileTypeContainer;
             if (graphic) {
                 objectID = graphic.attributes[this.selectedOperationalLayer.objectIdField];
                 domConstruct.empty(attachmentContainer);
@@ -266,49 +275,81 @@ define([
                             "class": "esriCTThumbnailContainer"
                         }, attachmentContainer);
 
-                        // display all attached images in thumbnails
+                        // display all attachments in thumbnails
                         for (i = 0; i < infos.length; i++) {
-                            // check if a attachment is of tiff image, then convert it into a non-image document
-                            if (infos[i].contentType.indexOf("image") !== -1 && infos[i].contentType.match(/(\/tiff)/)) {
-                                infos[i].contentType = "application/tiff";
-                            }
-                            if ((infos[i].contentType.indexOf("image") === -1) && (infos[i].contentType.indexOf("mp4") === -1)) {
-                                attachmentWrapper = domConstruct.create("div", {}, fieldContent);
+                          attachment = infos[i];
+                          attachmentWrapper = domConstruct.create("div", {"class": "esriCTThumbnailWrapper"}, fieldContent);
+                          imageThumbnailContainer = domConstruct.create("div", {
+                              "class": "esriCTNonImageContainer",
+                              "alt": infos[i].url
+                          }, attachmentWrapper);
 
-                                imageThumbnailContainer = domConstruct.create("div", {
-                                    "class": "esriCTNonImageContainer",
-                                    "alt": infos[i].url
-                                }, attachmentWrapper);
+                          imageThumbnailContent = domConstruct.create("div", {
+                              "class": "esriCTNonImageContent"
+                          }, imageThumbnailContainer);
 
-                                imageThumbnailContent = domConstruct.create("div", {
-                                    "class": "esriCTNonImageContent"
-                                }, imageThumbnailContainer);
+                          imageContainer = domConstruct.create("div", {}, imageThumbnailContent);
 
-                                imageContainer = domConstruct.create("div", {}, imageThumbnailContent);
+                          fileTypeContainer = domConstruct.create("div", {
+                            "class": "esriCTNonFileTypeContent"
+                          }, imageThumbnailContent);
 
-                                fileTypeContainer = domConstruct.create("div", {
-                                    "class": "esriCTNonFileTypeContent"
-                                }, imageThumbnailContent);
-
-                                isAttachmentAvailable = true;
-                                //set default image path if attachment has no image URL
-                                imagePath = dojoConfig.baseURL + this.appConfig.noAttachmentIcon;
-                                imageDiv = domConstruct.create("img", {
-                                    "alt": infos[i].url,
-                                    "class": "esriCTAttachmentImg",
-                                    "src": imagePath
-                                }, imageContainer);
-                                this._fetchDocumentContentType(infos[i], fileTypeContainer);
-                                this._fetchDocumentName(infos[i], imageThumbnailContainer);
-                                on(imageThumbnailContainer, "click", lang.hitch(this, this._displayImageAttachments));
-                            }
+                          isAttachmentAvailable = true;
+                          //set default image path if attachment has no image URL
+                          imagePath = dojoConfig.baseURL + this.appConfig.noAttachmentIcon;
+                          imageDiv = domConstruct.create("img", {
+                            "alt": infos[i].url,
+                            "class": "esriCTAttachmentImg",
+                            "src": imagePath
+                          }, imageContainer);
+                          this._fetchDocumentContentType(infos[i], fileTypeContainer);
+                          this._fetchDocumentName(infos[i], imageThumbnailContainer);
+                          on(imageThumbnailContainer, "click", lang.hitch(this, this._displayImageAttachments));
+                          //Create delete attachment button
+                          deleteAttachmentContainer = domConstruct.create("div", {
+                            "class": "esriCTDeleteAttachmentButton esriCTApplicationColor",
+                            "id": attachment.id,
+                            "innerHTML": this.appConfig.i18n.detailsPanel.delete
+                          }, attachmentWrapper);
+                          on(deleteAttachmentContainer, "click", lang.hitch(this, function () {
+                            this._deleteAttachment(attachment);
+                          }));
                         }
                         if (!isAttachmentAvailable) {
-                            domClass.add(attachmentContainer, "hidden");
+                          domClass.add(attachmentContainer, "hidden");
                         }
                     }
                 }));
             }
+        },
+
+        /**
+        * Function to delete attachments
+        @param{object} attachment object
+        * @memberOf widgets/details-panel/popup
+        **/
+        _deleteAttachment: function(attachment) {
+          var requestUrl = attachment.url.split('/attachments/')[0] + '/deleteAttachments';
+          var deleteRequest = esriRequest({
+            url: requestUrl,
+            content: {
+              attachmentIds: attachment.id,
+              rollbackOnFailure:true,
+              f: "json"},
+            callbackParamName: "callback"
+          });
+          this.appUtils.showLoadingIndicator();
+          deleteRequest.then(lang.hitch(this, function (response) {
+            //console.log("Success: ", response);
+            attachmentsSectionDiv = query(".attachmentsSection")[0];
+            domConstruct.empty(attachmentsSectionDiv);
+            this._checkAttachments();
+            this.appUtils.hideLoadingIndicator();
+          }), lang.hitch(this, function (error) {
+            //console.log("Error: ", error);
+            alert("Error: " + error);
+            this.appUtils.hideLoadingIndicator();
+          }));
         },
 
         /**
@@ -323,7 +364,7 @@ define([
             if (fileExtension && fileExtension[1]) {
                 typeText = "." + fileExtension[1].toUpperCase();
             } else {
-                typeText = this.appConfig.i18n.geoform.unknownPopupAttachment;
+                typeText = this.appConfig.i18n.comment.unknownCommentAttachment;
             }
             domAttr.set(fileTypeContainer, "innerHTML", typeText);
         },

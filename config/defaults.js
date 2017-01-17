@@ -21,14 +21,14 @@ define({
     "appid": "",
     "oauthappid": null,
     // Group templates must support a group url parameter. This will contain the id of the group.
-    "group": "4c4ea6122c1a4313bab674bc4d9cf83b",
+    "group": "d5dadd3773b24944aede6b27bad4f0a5",
     // Enter the url to the proxy if needed by the application. See the 'Using the proxy page' help topic for details
     // http://developers.arcgis.com/en/javascript/jshelp/ags_proxy.html
-    "proxyurl": "proxy.ashx",
+    "proxyurl": "http://kart.fredrikstad.kommune.no/proxy/proxy.ashx",
     // Example of a template specific property. If your template had several color schemes
     // you could define the default here and setup configuration settings to allow users to choose a different
     // color theme.
-    "theme": "#f26e1f",
+    "theme": "#005ce6",
     "bingKey": "", //Enter the url to your organizations bing maps key if you want to use bing basemaps
     // Defaults to arcgis.com. Set this value to your portal or organization host name.
     "sharinghost": location.protocol + "//" + "arcgis.com",
@@ -54,15 +54,15 @@ define({
         }]
     },
     // name of the application
-    "applicationName": "",
+    "applicationName": "Bevillinger i Fredrikstad",
     // application icon
-    "applicationIcon": "",
+    "applicationIcon": "http://kart.fredrikstad.kommune.no/skjenkebevillinger/images/logo.png",
     // application favicon icon
-    "applicationFavicon": "/images/favicon.ico",
+    "applicationFavicon": "http://kart.fredrikstad.kommune.no/skjenkebevillinger/images/logo.png",
     // to display any null values
     "showNullValueAs": "",
     // to set zoom level of map when single feature is selected
-    "zoomLevel": 12,
+    "zoomLevel": 10,
     // when web-map thumbnail icon is not available it will get replaced by this default icon
     "noThumbnailIcon": "/images/default-webmap-thumbnail.png",
     // when attachment is not available it will get replaced by this default icon
@@ -88,15 +88,19 @@ define({
     // to set rating field whether it needs to be displayed or not in web-map description area
     "webMapInfoAvgRating": false,
     // to set field of comment to fetch data from it
-    "commentField": "COMMENTS",
+    "commentField": "PRIKKER",
+    // to set field of inspection to fetch data from it
+    "inspectionField": "AVVIK",
     // to display comment table popup info
-    "usePopupConfigurationForComment": false,
+    "usePopupConfigurationForComment": true,
+    // to display inspection table popup info
+    "usePopupConfigurationForInspection": true,
     // to set the color of feature that is highlighted by selecting a particular row
     "highlightRow": "#C8C8C8",
     // to show non editable layers on selected web map
-    "showNonEditableLayers": false,
+    "showNonEditableLayers": true,
     // configurable message to indicate that user needs to select record to view the details panel
-    "selectFeatureMessage": "Choose a report from the table or map.",
+    "selectFeatureMessage": "Select a feature to get started.",
     // to enable or disable filters, applied on the selected layer
     "enableFilter": true,
     // to set title for help dialog
@@ -104,13 +108,22 @@ define({
     // to set content for help dialog
     "helpDialogContent": "<p>Welcome to Crowdsource Manager! <\/p> <p>Use this application to review and update reports. To get started, choose a category and then choose a report from the table or map.<\/p> <p>The details of that report will load in the panel in the lower left corner of the screen. From this panel, you can also review images, charts, and other information associated with the selected report. Update the report details by clicking the pencil icon, or hold down the CTRL key while clicking multiple reports to open the batch editor.<\/p> <p>View the location of the report using the map in the lower right corner of the application.<\/p><p>Reports can be filtered by time or field values. If time filtering is enabled for your reports, a time slider will appear below the table. Drag the time slider handle(s) to show only reports from a specific time span in the map and table. If filtering based on field values is enabled for your reports, a filter icon will appear in the table header next to the name of the fields that can be used to filter the reports. Click the icon and specify which reports you'd like to see in the table and map.<\/p>",
     // to set the text of popup tab
-    "popupTabText": "Info",
-    // to set the text of comment tab
-    "mediaTabText": "Media",
+    "popupTabText": "Bevilling",
     // to set the text of media tab
-    "commentsTabText": "Comments",
+    "mediaTabText": "Media",
+    // to set the text of comment tab
+    "commentsTabText": "Prikker",
+    // to set the text of inspection tab
+    "inspectionsTabText": "Kontroll",
     // to show/hide help icon
     "showHelpIcon": false,
+    // to show as a label for attachment section in popup form where attachments can be added
+    "popupFormAttachmentSectionLabel": "Attachments",
+    // to show as a label for attachment section in inspections form where attachments can be added
+    "inspectionFormAttachmentSectionLabel": "Attachments",
     // to show as a label for attachment section in comments form where attachments can be added
-    "commentFormAttachmentSectionLabel": "Attachments"
+    "commentFormAttachmentSectionLabel": "Attachments",
+    "submitMessage": "Thank you! Your report has been submitted.",
+    //Lower level configuration
+    "submitReportButtonColor": "#35ac46" //Color for Submit Report button.If EMPTY default color will be  #35ac46.
 });

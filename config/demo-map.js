@@ -205,51 +205,34 @@ define({
         }
     }
   ],
-    "baseMap": {
-      "baseMapLayers": [
+    "baseMap":{
+      "baseMapLayers":
+      [
         {
-          "id": "defaultBasemap",
-          "layerType": "ArcGISTiledMapServiceLayer",
-          "opacity": 1,
-          "visibility": true,
-          "url": "http://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer"
-      }
-    ],
-      "title": "Topographic"
-    },
-    "spatialReference": {
-      "wkid": 102100,
-      "latestWkid": 3857
-    },
-    "version": "2.1",
-    "bookmarks": [
-      {
-        "extent": {
-          "spatialReference": {
-            "wkid": 102100,
-            "latestWkid": 3857
-          },
-          "xmax": -12636569.516104667,
-          "xmin": -13378925.93481026,
-          "ymax": 4372513.169906271,
-          "ymin": 3882704.692654886
+          "id":"GrunnkartGraatone_7393",
+          "layerType":"ArcGISTiledMapServiceLayer",
+          "url":"http://kart.fredrikstad.kommune.no/arcgis/rest/services/Felles/GrunnkartGraatone/MapServer",
+          "visibility":true,"opacity":1,"title":"GrunnkartGraatone"
         },
-        "name": "Mojave Desert"
+        {
+          "id":
+          "Samferdsel_5369",
+          "layerType":"ArcGISMapServiceLayer",
+          "url":"http://kart.fredrikstad.kommune.no/arcgis/rest/services/Fredrikstad/Samferdsel/MapServer",
+          "visibility":true,
+          "visibleLayers":[0],
+          "opacity":1,
+          "title":"Samferdsel"
+        }
+      ],
+      "title":"GrunnkartGraatone"
     },
-      {
-        "extent": {
-          "spatialReference": {
-            "wkid": 102100,
-            "latestWkid": 3857
-          },
-          "xmax": -13498167.69893507,
-          "xmin": -13869345.908287708,
-          "ymax": 6166795.97187194,
-          "ymin": 5921891.733246354
-        },
-        "name": "Puget Sound"
-    }
-  ],
+    "spatialReference":{
+      "wkid":25832,
+      "latestWkid":25832
+    },
+    "version": "2.5",
+    "bookmarks": [],
     "applicationProperties": {
       "viewing": {
         "routing": {

@@ -19,6 +19,7 @@ define([
     "dojo/_base/declare",
     "dojo/_base/lang",
     "dojo/_base/array",
+    "dojo/_base/event",
     "dojo/dom",
     "dojo/dom-style",
     "dojo/dom-construct",
@@ -28,6 +29,20 @@ define([
     "widgets/app-header/app-header",
     "widgets/map-viewer/map-viewer",
     "widgets/webmap-list/webmap-list",
+    "widgets/geo-form/geo-form",
+    "esri/layers/GraphicsLayer",
+    "esri/graphic",
+    "esri/geometry/Point",
+    "esri/geometry/Polyline",
+    "esri/geometry/Polygon",
+    "esri/SpatialReference",
+    "esri/symbols/SimpleMarkerSymbol",
+    "esri/symbols/SimpleLineSymbol",
+    "esri/symbols/SimpleFillSymbol",
+    "esri/symbols/PictureMarkerSymbol",
+    "esri/tasks/query",
+    "esri/toolbars/edit",
+    "esri/toolbars/draw",
     "widgets/data-viewer/data-viewer",
     "dojo/dom-class",
     "esri/layers/FeatureLayer",
@@ -43,6 +58,7 @@ define([
     declare,
     lang,
     array,
+    event,
     dom,
     domStyle,
     domConstruct,
@@ -52,6 +68,20 @@ define([
     ApplicationHeader,
     MapViewer,
     WebMapList,
+    GeoForm,
+    GraphicsLayer,
+    Graphic,
+    Point,
+    Polyline,
+    Polygon,
+    SpatialReference,
+    SimpleMarkerSymbol,
+    SimpleLineSymbol,
+    SimpleFillSymbol,
+    PictureMarkerSymbol,
+    Query,
+    Edit,
+    Draw,
     DataViewer,
     domClass,
     FeatureLayer,
@@ -92,6 +122,9 @@ define([
         _isGraphicLayerClicked: false, // to track whether graphic layer is clicked or not
         _isShowSelectedClicked: false,
         _disableTimeSliderClickHandle: null, // to store handle of disable time slider
+        _editToolbar: null,
+        _editingEnabled: false,
+        _editedObjectID: null,
 
         /**
         * This method is designed to handle processing after any DOM fragments have been actually added to the document.
@@ -108,6 +141,10 @@ define([
             if (boilerPlateTemplateObject) {
                 this._boilerPlateTemplate = boilerPlateTemplateObject;
                 this.appConfig = boilerPlateTemplateObject.config;
+
+                this.appUtils = ApplicationUtils;//Create esri geocoder instance, this will be needed in the process of reverse geocoding
+                this.appUtils.createGeocoderInstance(this.appConfig);
+
                 // if login details are not available set it to anonymousUserName
                 if (this._loggedInUser) {
                     this.appConfig.logInDetails = {
@@ -486,6 +523,11 @@ define([
                     }
                     this._toggleNoFeatureFoundDiv(true);
                     this.map = details.map;
+                    
+                    // Create instance of Draw tool to draw the graphics on graphics layer
+                    this.toolbar = new Draw(this.map);
+                    this.newlyAddedFeatures = [];
+                    this._selectedMapDetails = details;
                     this._layerSelectionDetails = details;
                     this._itemInfo = details.itemInfo;
                     this._timeInfo = details.operationalLayerDetails.layerObject.timeInfo;
@@ -501,6 +543,7 @@ define([
                     }
                     this._enableHeaderIcons();
                     this._setApplicationHeaderTitle();
+                    this._setGeoFormButton();
                     this._attachMapEvents();
                     this._removeFeatureLayerHandle();
                     this._createFeatureLayerHandle();
@@ -555,24 +598,11 @@ define([
             if (this._mapZoomOutHandle) {
                 this._mapZoomOutHandle.remove();
             }
+
             this._mapResizeHandle = on(this.map, "resize", lang.hitch(this, function () {
                 this._resizeMap();
             }));
-            this._mapClickHandle = on(this.map, "click", lang.hitch(this, function (evt) {
-                $(".esriCTFilterParentContainer").css("display", "none");
-                if ((!domClass.contains("webmapListToggleButton", "esriCTWebMapPanelToggleButtonOpenDisabled")) && (!domClass.contains("webmapListToggleButton", "esriCTWebMapPanelToggleButtonCloseDisabled"))) {
-                    this._webMapListWidget.hideWebMapList();
-                }
-                if ((evt.graphic) && (evt.graphic._layer) && ((evt.graphic._layer.id === this._refinedOperationalLayer.id) || (evt.graphic._layer.id === "selectedRowGraphicsLayer"))) {
-                    // to track that feature is clicked of feature layer
-                    if (this._isGraphicLayerClicked) {
-                        this._dataViewerWidget.onFeatureClick(evt, true);
-                        this._isGraphicLayerClicked = false;
-                    } else {
-                        this._dataViewerWidget.onFeatureClick(evt, false);
-                    }
-                }
-            }));
+
             this._mapZoomInHandle = on(query(".esriSimpleSliderIncrementButton")[0], "click", lang.hitch(this, function () {
                 $(".esriCTFilterParentContainer").css("display", "none");
                 if ((!domClass.contains("webmapListToggleButton", "esriCTWebMapPanelToggleButtonOpenDisabled")) && (!domClass.contains("webmapListToggleButton", "esriCTWebMapPanelToggleButtonCloseDisabled"))) {
@@ -584,6 +614,58 @@ define([
                 $(".esriCTFilterParentContainer").css("display", "none");
                 if ((!domClass.contains("webmapListToggleButton", "esriCTWebMapPanelToggleButtonOpenDisabled")) && (!domClass.contains("webmapListToggleButton", "esriCTWebMapPanelToggleButtonCloseDisabled"))) {
                     this._webMapListWidget.hideWebMapList();
+                }
+            }));
+
+            // esri's edit toolbar is used to move a feature. The editing is activated/deactivated by clicking the feature.
+            var editToolbar, editingEnabled;
+            this._editToolbar = new Edit(this.map);
+            on(this._editToolbar, "deactivate", lang.hitch(this, function(evt) {
+              if (evt.info.isModified) {
+                this._refinedOperationalLayer.applyEdits(null, [evt.graphic], null);
+              }
+            }));
+
+            this._disableEdit = function () {
+              this._editingEnabled = false;
+              console.log("edit deactivated");
+              this._editToolbar.deactivate();
+              this._refinedOperationalLayer.clearSelection();
+            }
+            this._enableEdit = function (event) {
+              this._editingEnabled = true;
+              console.log("edit activated");
+              this._editToolbar.activate(Edit.MOVE, event.graphic);
+              var query = new Query();
+              this._editedObjectID = event.graphic.attributes[this._refinedOperationalLayer.objectIdField];
+              query.objectIds = [this._editedObjectID];
+              this._refinedOperationalLayer.selectFeatures(query);
+            }
+            this._mapClickHandle = on(this.map, "click", lang.hitch(this, function (evt) {
+                $(".esriCTFilterParentContainer").css("display", "none");
+                if ((!domClass.contains("webmapListToggleButton", "esriCTWebMapPanelToggleButtonOpenDisabled")) && (!domClass.contains("webmapListToggleButton", "esriCTWebMapPanelToggleButtonCloseDisabled"))) {
+                    this._webMapListWidget.hideWebMapList();
+                }
+                if ((evt.graphic) && (evt.graphic._layer) && ((evt.graphic._layer.id === this._refinedOperationalLayer.id) || (evt.graphic._layer.id === "selectedRowGraphicsLayer"))) {
+                    // to track that feature is clicked of feature layer
+
+                    if (this._isGraphicLayerClicked) {
+                        this._dataViewerWidget.onFeatureClick(evt, true);
+                        this._isGraphicLayerClicked = false;
+                    } else {
+                        this._dataViewerWidget.onFeatureClick(evt, false);
+                    }
+
+                    if (this._editingEnabled) {
+                      this._disableEdit();
+                      this._enableEdit(evt);
+                    }
+                    else {
+                      this._enableEdit(evt);
+                    }
+                }
+                else if (this._editingEnabled) {
+                  this._disableEdit();
                 }
             }));
         },
@@ -790,6 +872,25 @@ define([
         */
         _setApplicationHeaderTitle: function () {
             dom.byId("operationalLayerName").innerHTML = this._layerSelectionDetails.operationalLayerDetails.title;
+        },
+
+        /**
+        * This function is used to create the geoform button after selection of operational layer
+        * @memberOf widgets/main/main
+        */
+        _setGeoFormButton: function () {
+            //dom.byId("operationalLayerName").innerHTML = this._layerSelectionDetails.operationalLayerDetails.title;
+            domAttr.set(dom.byId("submitFromMapText"), "innerHTML", this.appConfig.i18n.dataviewer.submitReportButtonText);
+            var submitButtonColor = (this.appConfig && this.appConfig.submitReportButtonColor) ? this.appConfig.submitReportButtonColor : "#35ac46";
+            domStyle.set(dom.byId("submitFromMap"), "background-color", submitButtonColor);
+
+            on(dom.byId("submitFromMap"), "click", lang.hitch(this, function (evt) {
+              this._createGeoForm();
+              // handler for the hiding web map list on open GeoForm widget
+              if ((!domClass.contains("webmapListToggleButton", "esriCTWebMapPanelToggleButtonOpenDisabled")) && (!domClass.contains("webmapListToggleButton", "esriCTWebMapPanelToggleButtonCloseDisabled"))) {
+                  this._webMapListWidget.hideWebMapList();
+              }
+            }));
         },
 
         /**
@@ -1071,6 +1172,281 @@ define([
             }
         },
 
+
+        /**
+        * Instantiate geo-form widget
+        * @memberOf main
+        */
+        _createGeoForm: function () {
+            //if geo-from is not visible then
+            var geoFormConfigData, layerDefinition;
+            layerDefinition = this._layerSelectionDetails.operationalLayerDetails.layerDefinition;
+            // parameters that are passed to data-viewer widget
+            geoFormConfigData = {
+                "config": this.appConfig,
+                "webMapID": this._layerSelectionDetails.webMapId,
+                "layerId": this._layerSelectionDetails.operationalLayerId,
+                "layerTitle": this._layerSelectionDetails.operationalLayerDetails.title,
+                "basemapId": this._layerSelectionDetails.itemInfo.itemData.baseMap.baseMapLayers[0].id,
+                "changedExtent": this.changedExtent,
+                "appUtils": ApplicationUtils,
+                "appConfig": this.appConfig
+            };
+
+            if (domClass.contains(dom.byId('geoformContainer'), "esriCTHidden")) {
+                if (this._layerSelectionDetails && this._layerSelectionDetails.operationalLayerId) {
+                    //Show GeoForm
+                    domClass.replace(dom.byId('geoformContainer'), "esriCTVisible", "esriCTHidden");
+                    //if last shown geoform is for same the layer then don't do anything.
+                    if (this.geoformInstance && this._layerSelectionDetails.operationalLayerId === this.geoformInstance.layerId) {
+                        if (this.changedExtent) {
+                            this.geoformInstance.map.setExtent(this.changedExtent);
+                            this.geoformInstance._resizeMap();
+                        }
+                        this.geoformInstance._activateDrawTool();
+                        return;
+                    }
+                    //if last geoform instance exist then destroy it.
+                    this._destroyGeoForm();
+                    //Create new instance of geoForm
+
+                    this.geoformInstance = new GeoForm(geoFormConfigData, domConstruct.create("div", {}, dom.byId("geoformContainer")));
+
+
+                    this.featureGraphicLayer = new GraphicsLayer({ "id": "featureLayerGraphics" });
+                    this.map.addLayer(this.featureGraphicLayer);
+
+                    //on submitting issues in geoform update issue wall and main map to show newly updated issue.
+                    this.geoformInstance.geoformSubmitted = lang.hitch(this, function (objectId) {
+                        try {
+                            //refresh main map so that newly created issue will be shown on it.
+                            var layer = this._layerSelectionDetails.map.getLayer(this._layerSelectionDetails.operationalLayerId);
+                            layer.refresh();
+                            if (this.appConfig.showNonEditableLayers) {
+                                //Refresh label layers to fetch label of updated feature
+                                this.appUtils.refreshLabelLayers(this._layerSelectionDetails.itemInfo.itemData.operationalLayers);
+                            }
+                            this._addNewFeature(objectId, this.selectedLayer, "geoform").then(lang.hitch(this, function () {
+                                //update my issue list when new issue is added
+                                if (this._myIssuesWidget) {
+                                    this._myIssuesWidget.updateIssueList(this._layerSelectionDetails, null, true);
+                                }
+                            }));
+                            //clear graphics drawn on layer after feature has been submmited
+                            this.featureGraphicLayer.clear();
+                        } catch (ex) {
+                            this.appUtils.showError(ex.message);
+                        }
+                    });
+                    //deactivate the draw tool on main map after closing geoform
+                    this.geoformInstance.onFormClose = lang.hitch(this, function () {
+                        this.toolbar.deactivate();
+                        if (this.featureGraphicLayer) {
+                            this.featureGraphicLayer.clear();
+                        }
+                    });
+
+                    //clear any graphics present on main map after graphic has been drawn on geoform map
+                    this.geoformInstance.onDrawComplete = lang.hitch(this, function (evt) {
+                        if (this.featureGraphicLayer) {
+                            this.featureGraphicLayer.clear();
+                        }
+                        this._addToGraphicsLayer(evt);
+                    });
+                    this.geoformInstance.startup();
+                }
+            }
+        },
+
+        /**
+        * Add new feature to graphics layer
+        * @param{string} objectId
+        * @param{object} new feature
+        * @param{object} operational layer
+        * @memberOf main
+        */
+        _addNewFeature: function (objectId, layer, addedFrom) {
+            var queryFeature, featureDef = new Deferred(), currentDateTime = new Date().getTime();
+            queryFeature = new Query();
+            queryFeature.objectIds = [parseInt(objectId, 10)];
+            queryFeature.outFields = ["*"];
+            queryFeature.where = currentDateTime + "=" + currentDateTime;
+            queryFeature.returnGeometry = true;
+            layer.queryFeatures(queryFeature, lang.hitch(this, function (result) {
+                this._createFeature(result.features[0], layer, addedFrom);
+                featureDef.resolve();
+            }), function (error) {
+                featureDef.reject();
+                console.log("Error :" + error);
+            });
+            return featureDef.promise;
+        },
+
+        /**
+        * Create feature
+        * @param{object} new feature
+        * @memberOf main
+        */
+        _createFeature: function (newFeature, layer, addedFrom) {
+            var newGraphic, featureExsist = false;
+            //Add infotemplate to newly created feature
+            newFeature.setInfoTemplate(layer.infoTemplate);
+            newGraphic = this._createFeatureAttributes(newFeature, layer);
+            //check if newfeature is already present in graphics layer and set featureExsist flag to true
+            array.some(this.displaygraphicsLayer.graphics, lang.hitch(this, function (currentFeature) {
+                if (currentFeature.attributes[layer.objectIdField] === newGraphic.graphic.attributes[layer.objectIdField]) {
+                    featureExsist = true;
+                    return true;
+                }
+            }));
+            //If feature is found through search widget, we need to set my issues flag to false if it is true
+            if (addedFrom === "search") {
+                this._isMyIssues = false;
+            }
+            if (!featureExsist) {
+                //If feature is added through geoform which is outside the buffer, append it to layer graphics array
+                this.newlyAddedFeatures.push(newFeature.attributes[layer.objectIdField]);
+                this.layerGraphicsArray.push(this._createFeatureAttributes(newFeature, layer));
+                this.layerGraphicsArray.sort(this._sortFeatureArray);
+                if (this.appConfig.geolocation) {
+                    this.layerGraphicsArray.reverse();
+                }
+                this.displaygraphicsLayer.add(newGraphic.graphic);
+                //create or update issue-list
+                if (addedFrom === "geoform") {
+                    //Increment layer count by 1 since we have successfully added a graphic
+                    this.featureLayerCount++;
+                }
+                this._createIssueWall(this._layerSelectionDetails);
+            }
+            //If feature is found through search widget then we need to display item details for the selected feature
+            if (addedFrom === "search") {
+                this._itemSelected(newGraphic.graphic, true);
+                this._isMyIssues = false;
+            }
+
+            //Since we added one feature now, we need to clear the no features found message
+            if (this.displaygraphicsLayer.graphics && this.displaygraphicsLayer.graphics.length > 0) {
+                if (!domClass.contains(this._issueWallWidget.noIssuesMessage, "esriCTHidden")) {
+                    domClass.add(this._issueWallWidget.noIssuesMessage, "esriCTHidden");
+                }
+            }
+        },
+
+        /**s
+        * Create feature object
+        * @param{object} New feature
+        * @param{object} Distance of feature from current location
+        * @param{object} Selected operational layer
+        * @memberOf main
+        */
+        _createFeatureAttributes: function (newFeature, layer) {
+            var newGraphic1, fieldValue;
+            newGraphic1 = new Graphic();
+            //Kepping instance of original feature for further use
+            newGraphic1.originalFeature = newFeature;
+            newGraphic1.attributes = newFeature.attributes;
+            newGraphic1.geometry = newFeature.geometry;
+            newGraphic1.infoTemplate = layer.infoTemplate;
+            newGraphic1.webMapId = this._layerSelectionDetails.webMapId;
+            if (this.appConfig.geolocation) {
+                fieldValue = this._getDistanceFromCurrentLocation(newGraphic1);
+            } else {
+                fieldValue = newGraphic1.attributes[layer.objectIdField];
+            }
+            return {
+                "graphic": newGraphic1,
+                "sortValue": fieldValue
+            };
+        },
+
+        /**
+        * Destroy geo-form widget
+        * @memberOf main
+        */
+        _destroyGeoForm: function () {
+            //if last geoform instance exist then destroy it.
+            if (this.geoformInstance) {
+                this.geoformInstance.destroyInstance();
+                domConstruct.empty(dom.byId("geoformContainer"));
+                this.geoformInstance = null;
+            }
+        },
+
+        /**
+        * Add graphic on the map
+        * @param{object} evt, draw tool bar event
+        * @memberOf widgets/geo-form/geo-form
+        */
+        _addToGraphicsLayer: function (evt) {
+            var symbol, graphic, graphicGeometry;
+            // clear graphics on the map
+            this._clearSubmissionGraphic();
+            // get geometry
+            if (evt.geometry) {
+                graphicGeometry = evt.geometry.type === "extent" ? this._createPolygonFromExtent(evt.geometry) : evt.geometry;
+            } else {
+                graphicGeometry = evt;
+            }
+            symbol = this._createFeatureSymbol(graphicGeometry.type);
+            // create new graphic
+            graphic = new Graphic(graphicGeometry, symbol);
+            // add graphics
+            this.featureGraphicLayer.add(graphic);
+        },
+
+        /**
+        * Clear graphics
+        * @memberOf widgets/geo-form/geo-form
+        */
+        _clearSubmissionGraphic: function () {
+            if (this.featureGraphicLayer) {
+                this.featureGraphicLayer.clear();
+            }
+        },
+
+        /**
+        * Convert extent type of geometry to polygon geometry
+        * @param{object} geometry, geometry of the graphics plotted on the map
+        * @memberOf widgets/geo-form/geo-form
+        */
+        _createPolygonFromExtent: function (geometry) {
+            var polygon = new Polygon(geometry.spatialReference);
+            // set geometry ring to the polygon layer
+            polygon.addRing([
+                [geometry.xmin, geometry.ymin],
+                [geometry.xmin, geometry.ymax],
+                [geometry.xmax, geometry.ymax],
+                [geometry.xmax, geometry.ymin],
+                [geometry.xmin, geometry.ymin]
+            ]);
+            // return polygon geometry
+            return polygon;
+        },
+
+        /**
+        * Create symbol for draw tool geometries in draw tab
+        * @param{string} geometryType, type of geometry
+        * @memberOf widgets/geo-form/geo-form
+        */
+        _createFeatureSymbol: function (geometryType) {
+            var symbol;
+            //set symbol for selected geometry type of the layer
+            switch (geometryType) {
+            case "point":
+                symbol = new SimpleMarkerSymbol();
+                break;
+            case "polyline":
+                symbol = new SimpleLineSymbol();
+                break;
+            case "polygon":
+                symbol = new SimpleFillSymbol();
+                break;
+            }
+            //return symbol
+            return symbol;
+        },
+
         /**
         * This function is used to instantiate time slider widget.
         * @memberOf widgets/main/main
@@ -1218,6 +1594,7 @@ define([
                 this._detailsPanelWidget.destroyPopupWidget();
                 this._detailsPanelWidget.destroyMediaWidget();
                 this._detailsPanelWidget.destroyCommentsWidget();
+                this._detailsPanelWidget.destroyInspectionsWidget();
                 this._detailsPanelWidget.destroy();
             }
             if (dom.byId("detailsPanelWrapperContainer")) {
@@ -1288,7 +1665,7 @@ define([
                 domConstruct.destroy(dojo.query(".esriCTNoContentDetailsPanelWrapperContainer")[0]);
             }
             noContentWrapperContainer = domConstruct.create("div", { "class": "esriCTNoContentDetailsPanelWrapperContainer" }, dom.byId("detailsPanelWrapperContainer"));
-            domConstruct.create("div", { "class": "esriCTNoContentDetailsPanelContainer", "innerHTML": this.appConfig.selectFeatureMessage }, noContentWrapperContainer);
+            domConstruct.create("div", { "class": "esriCTNoContentDetailsPanelContainer", "innerHTML": this.appConfig.i18n.detailsPanel.selectFeatureMessage }, noContentWrapperContainer);
         },
 
         /**
@@ -1296,20 +1673,20 @@ define([
         * @memberOf widgets/main/main
         */
         _handleEmptyDataViewerPanel: function () {
-            var noDataWrapperContainer, webMapListContainer, webMapListContainerWidth;
-            webMapListContainer = dom.byId('webMapListContainer');
-            webMapListContainerWidth = $(webMapListContainer).outerWidth(true);
-            domConstruct.empty(dom.byId("overlayContainer"));
-            noDataWrapperContainer = domConstruct.create("div", {
-                "class": "esriCTNoDataDataViewerPanelContainer",
-                "innerHTML": this.appConfig.i18n.dataviewer.selectLayerToBegin
-            }, dom.byId("overlayContainer"));
-            if (this.appConfig.i18n.direction === "rtl") {
-                domStyle.set(noDataWrapperContainer, "padding-right", webMapListContainerWidth + "px");
-            } else {
-                domStyle.set(noDataWrapperContainer, "padding-left", webMapListContainerWidth + "px");
-            }
-            this._setNoDataDataViewerMessagePosition();
+          var noDataWrapperContainer, webMapListContainer, webMapListContainerWidth;
+          webMapListContainer = dom.byId('webMapListContainer');
+          webMapListContainerWidth = $(webMapListContainer).outerWidth(true);
+          domConstruct.empty(dom.byId("overlayContainer"));
+          noDataWrapperContainer = domConstruct.create("div", {
+              "class": "esriCTNoDataDataViewerPanelContainer",
+              "innerHTML": this.appConfig.i18n.dataviewer.selectLayerToBegin
+          }, dom.byId("overlayContainer"));
+          if (this.appConfig.i18n.direction === "rtl") {
+              domStyle.set(noDataWrapperContainer, "padding-right", webMapListContainerWidth + "px");
+          } else {
+              domStyle.set(noDataWrapperContainer, "padding-left", webMapListContainerWidth + "px");
+          }
+          this._setNoDataDataViewerMessagePosition();
         },
 
         /**

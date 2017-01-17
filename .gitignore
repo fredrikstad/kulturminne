@@ -2,6 +2,10 @@
 __*.*
 __*
 
+# Server configs and scripts
+.config
+.sh
+
 # Snap backups
 *.7z
 

@@ -23,7 +23,22 @@ define([
     "dojo/query",
     "dojo/number",
     "dojo/dom",
-    "dojo/_base/Color"
+    "dojo/_base/Color",
+
+    "dojo/_base/declare",
+    "dojo/_base/fx",
+    "dojo/_base/lang",
+    "dojo/_base/array",
+    "dojo/dom-geometry",
+    "dojo/dom-attr",
+    "dojo/dom-style",
+    "dojo/on",
+    "dojo/has",
+    "dijit/_WidgetBase",
+    "esri/dijit/LocateButton",
+    "esri/dijit/HomeButton",
+    "esri/tasks/locator",
+    "esri/geometry/webMercatorUtils"
 ], function (
     domClass,
     ThemeCss,
@@ -32,7 +47,22 @@ define([
     query,
     numberformatter,
     dom,
-    Color
+    Color,
+
+    declare,
+    coreFx,
+    lang,
+    array,
+    domGeometry,
+    domAttr,
+    domStyle,
+    on,
+    has,
+    _WidgetBase,
+    LocateButton,
+    HomeButton,
+    Locator,
+    webMercatorUtils
 ) {
     return {
         /**
@@ -209,6 +239,98 @@ define([
         },
 
         /**
+        * Create geolocation button on the map
+        * @memberOf utils/utils
+        */
+        createGeoLocationButton: function (appConfig, basemapLayers, map, parentNode, addGraphic) {
+            this.config = appConfig;
+            var currentLocation, createLocationDiv;
+            // create geolocation div
+            createLocationDiv = domConstruct.create("div", {}, parentNode);
+            //domAttr.set(createLocationDiv, "title", this.config.i18n.map.geolocationTooltip);
+            // initialize object of locate button
+            currentLocation = new LocateButton({
+                map: map,
+                highlightLocation: false,
+                setScale: false,
+                centerAt: false
+            }, createLocationDiv);
+            currentLocation.startup();
+            domStyle.set(parentNode, 'display', currentLocation.domNode.style["display"]);
+
+            // event on locate
+            on(currentLocation, "locate", lang.hitch(this, function (evt) {
+                this.onGeolocationComplete(evt, addGraphic);
+            }));
+        },
+
+        /**
+        * Create homebutton button on the map
+        * @memberOf utils/utils
+        */
+        createHomeButton: function (map, parentNode) {
+            var homeButton, createHomeButtonDiv;
+            createHomeButtonDiv = domConstruct.create("div", { "class": "esriCTHomeButton" }, parentNode);
+            homeButton = new HomeButton({
+                map: map,
+                "class": "esriCTHomeButton"
+            }, createHomeButtonDiv);
+            homeButton.startup();
+        },
+
+        /**
+        * Fetch the basemap extent
+        * @memberOf utils/utils
+        */
+        getBasemapExtent: function (baseMapLayers) {
+            var basemapExtent, i;
+            /* If map contains a single basemap layer, consider full extent of that basemap
+            If map contains multiple basemap layers, union the full extent of all the basemaps */
+            for (i = 0; i < baseMapLayers.length; i++) {
+                if (i === 0) {
+                    basemapExtent = baseMapLayers[i].layerObject.fullExtent;
+                } else {
+                    basemapExtent = basemapExtent.union(baseMapLayers[i].layerObject.fullExtent);
+                }
+            }
+            return basemapExtent;
+        },
+
+        /**
+        * Invoked when geolocation is complete
+        * @memberOf utils/utils
+        */
+        onGeolocationComplete: function (event, addGraphic) {
+            return event;
+        },
+
+        /* This function is used to display place holder text in search bar
+        * @memberOf utils/utils
+        */
+        displayPlaceHolderText: function (node, itemInfo, nls) {
+            if (has("ie") === 9) {
+                if (lang.trim(node.value) === "" && itemInfo.itemData.applicationProperties.viewing.search && itemInfo.itemData.applicationProperties.viewing.search.hintText) {
+                    node.value = itemInfo.itemData.applicationProperties.viewing.search.hintText;
+                    domClass.add(node, "esriCTPlaceholder");
+                } else {
+                    node.value = nls.locator.locatorPlaceholder;
+                    domClass.add(node, "esriCTPlaceholder");
+                }
+            }
+        },
+
+        /**
+        * This function is used to remove place holder text in search bar
+        * @memberOf widgets/utils/utils
+        */
+        removePlaceHolderText: function (node) {
+            if (domClass.contains(node, "esriCTPlaceholder")) {
+                node.value = "";
+                domClass.remove(node, "esriCTPlaceholder");
+            }
+        },
+        
+        /**
         * This function is used to convert number to thousand separator
         * @param{integer} number that needs to be converted into thousand separator
         * @memberOf utils/utils
@@ -235,6 +357,28 @@ define([
         isIos: function () {
             var ua = navigator.userAgent.toLowerCase();
             return ua.indexOf("ipad") > -1;
-        }
+        },
+        /**
+        * This function is used create geocoder object based on the portal settings
+        * @memberOf widgets/utils/utils
+        */
+        createGeocoderInstance: function (appConfig) {
+            this.config = appConfig;
+            //Default geocoder url
+            var geocodeURL = "https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer";
+            if (this.config.helperServices && this.config.helperServices.geocode && this.config.helperServices.geocode[0] && this.config.helperServices.geocode[0].url) {
+                geocodeURL = this.config.helperServices.geocode[0].url;
+            }
+            //create the locator instance to reverse geocode the address
+            this.locatorInstance = new Locator(geocodeURL);
+            //Listen for location to address complete event
+            this.locatorInstance.on("location-to-address-complete", lang.hitch(this, function (result) {
+                this.onLocationToAddressComplete(result);
+            }));
+            //Listen for error in locator
+            this.locatorInstance.onError = lang.hitch(this, function (err) {
+                this.onLocationToAddressFailed(err);
+            });
+        },
     };
 });

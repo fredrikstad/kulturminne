@@ -160,6 +160,7 @@ define({
         },
         detailsPanel: {
             editContentText: "Edit record", // Displayed on hover of edit toggle button
+            deleteContentText: "Delete record", // Displayed on hover of delete toggle button
             selectFeatureMessage: "Select a feature to get started.",
             delete: "Delete",
             deleteAttachmentError: "The attachment was not deleted"

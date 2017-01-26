@@ -156,6 +156,7 @@ define({
   },
   "detailsPanel": {
     "editContentText": "Rediger post", // Displayed on hover of edit toggle button
+    "deleteContentText": "Fjern post", // Displayed on hover of delete toggle button
     "selectFeatureMessage": "Velg en post for å komme i gang.",
     "delete": "Fjern",
     "deleteAttachmentError": "Vedlegget ble ikke slettet"

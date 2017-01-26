@@ -267,6 +267,7 @@ define([
                 inspectionContentPane.set('content', this._entireInspectionsArr[i][1].features[0].getContent());
                 this._checkAttachments(inspectionContentPaneContainer, i);
                 this._createInspectionButton(inspectionContentPaneContainer, this._entireInspectionsArr[i][1].features[0]);
+                this._deleteInspectionButton(inspectionContentPaneContainer, this._entireInspectionsArr[i][1].features[0]);
             }
             this.showInspectionsTab();
             domAttr.set(dom.byId("inspectionsTotalCount"), "innerHTML", "(" + this._entireInspectionsArr.length + ")");
@@ -453,13 +454,29 @@ define([
         },
 
         /**
-        * This function is used to create inspections button
+        * This function is used to create edit inspections button
         * @memberOf widgets/details-panel/inspections
         */
         _createInspectionButton: function (parentDiv, graphic) {
             var inspectionBtnDiv;
             inspectionBtnDiv = domConstruct.create("div", { "class": "esriCTInspectionButton", "title": this.appConfig.i18n.detailsPanel.editContentText }, parentDiv);
             on(inspectionBtnDiv, "click", lang.hitch(this, function () {
+                this.appUtils.showLoadingIndicator();
+                domClass.add(this.addInspectionsBtnWrapperContainer, "esriCTHidden");
+                this._createInspectionForm(graphic, false);
+                domStyle.set(this.inspectionsContainer, "display", "none");
+            }));
+        },
+
+        /**
+        * This function is used to create delete inspections button
+        * @memberOf widgets/details-panel/inspections
+        */
+        _deleteInspectionButton: function (parentDiv, graphic) {
+            var inspectionBtnDiv;
+            inspectionBtnDiv = domConstruct.create("div", { "class": "esriCTDeleteInspectionButton", "title": this.appConfig.i18n.detailsPanel.deleteContentText }, parentDiv);
+            on(inspectionBtnDiv, "click", lang.hitch(this, function () {
+                alert("Are you sure you want to delete the prikk");
                 this.appUtils.showLoadingIndicator();
                 domClass.add(this.addInspectionsBtnWrapperContainer, "esriCTHidden");
                 this._createInspectionForm(graphic, false);

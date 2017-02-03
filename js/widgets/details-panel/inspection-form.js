@@ -271,10 +271,10 @@ define([
         */
         _addNewInspections: function (featureData) {
             featureData.attributes = this._removeAttributeFromObject(featureData.attributes, this.selectedLayer.objectIdField);
-            // Update the inspection to the inspection table
+            // add the inspection to the inspection table
             this.inspectionTable.applyEdits([featureData], null, null, lang.hitch(this, function (addResult, updateResult, deleteResult) { //ignore jslint
                 var fileList, i, userFormNode;
-                // for update we only need updateResult parameter
+                // for new inspection we only need addResult parameter
                 if (addResult && addResult.length > 0 && addResult[0].success) {
                     userFormNode = dom.byId("addInspectionAttachmentsWrapperContainer");
                     // if layer has attachments then add those attachments

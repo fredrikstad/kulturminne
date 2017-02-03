@@ -795,17 +795,10 @@ table {
     right: 10px;
     top: 4px;
 }
-
 .esriCTDeleteFeatureButton, .esriCTDeleteCommentButton, .esriCTDeleteInspectionButton {
-    height: 24px;
-    width: 24px;
-    background-size: 24px;
-    cursor: pointer;
-    background-color: #fff;
-    background: url('../images/clear-text-24.png') no-repeat center;
     position: absolute;
     right: 60px;
-    top: 4px;
+    top: 2px;
 }
 
 .nav-justified, .nav-tabs.nav-justified {

@@ -373,6 +373,7 @@ define([
                       "id": attachment.id,
                       "innerHTML": this.appConfig.i18n.detailsPanel.delete
                     }, attachmentWrapper);
+                    domConstruct.create("span", {"class": "glyphicon glyphicon-trash"}, deleteAttachmentContainer, "first");
                     on(deleteAttachmentContainer, "click", lang.hitch(this, function () {
                       this._deleteAttachment(attachment);
                     }));
@@ -474,13 +475,32 @@ define([
         */
         _deleteInspectionButton: function (parentDiv, graphic) {
             var inspectionBtnDiv;
-            inspectionBtnDiv = domConstruct.create("div", { "class": "esriCTDeleteInspectionButton", "title": this.appConfig.i18n.detailsPanel.deleteContentText }, parentDiv);
+            inspectionBtnDiv = domConstruct.create("div", {
+              "class": "btn btn-sm btn-danger esriCTDeleteInspectionButton",
+              "innerHTML": this.appConfig.i18n.detailsPanel.delete,
+              "title": this.appConfig.i18n.detailsPanel.deleteContentText
+            }, parentDiv);
+            domConstruct.create("span", {"class": "glyphicon glyphicon-trash"}, inspectionBtnDiv, "first");
             on(inspectionBtnDiv, "click", lang.hitch(this, function () {
-                alert("Are you sure you want to delete the prikk");
+
+              if (confirm(this.appConfig.i18n.detailsPanel.verifyDelete)) {
+                graphic.attributes.SLETTET = 'Ja';
                 this.appUtils.showLoadingIndicator();
-                domClass.add(this.addInspectionsBtnWrapperContainer, "esriCTHidden");
-                this._createInspectionForm(graphic, false);
-                domStyle.set(this.inspectionsContainer, "display", "none");
+                this._inspectionsTable.applyEdits(null, [graphic], null, lang.hitch(this, function () { //ignore jslint
+                  domConstruct.empty(this.inspectionsContainer);
+                  domStyle.set(this.inspectionsContainer, "display", "block");
+                  this._showInspections(this.multipleFeatures[0], this.inspectionsContainer);
+                  //Hide loading indicator
+                  this.appUtils.hideLoadingIndicator();
+                }), lang.hitch(this, function (err) {
+                    //Hide loading indicator
+                    this.appUtils.hideLoadingIndicator();
+                    // Show error message
+                    this.appUtils.showError(err);
+                }));
+              } else {
+                console.log('Do nothing');
+              }
             }));
         },
 

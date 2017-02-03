@@ -163,6 +163,7 @@ define({
             deleteContentText: "Delete record", // Displayed on hover of delete toggle button
             selectFeatureMessage: "Select a feature to get started.",
             delete: "Delete",
+            verifyDelete: "Are you sure you want to delete the record?",
             deleteAttachmentError: "The attachment was not deleted"
         },
         signOutPage: {

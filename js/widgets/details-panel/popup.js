@@ -307,10 +307,12 @@ define([
                           on(imageThumbnailContainer, "click", lang.hitch(this, this._displayImageAttachments));
                           //Create delete attachment button
                           deleteAttachmentContainer = domConstruct.create("div", {
-                            "class": "esriCTDeleteAttachmentButton esriCTApplicationColor",
+                            "class": "esriCTDeleteAttachmentButton btn-danger",
                             "id": attachment.id,
                             "innerHTML": this.appConfig.i18n.detailsPanel.delete
                           }, attachmentWrapper);
+                          domConstruct.create("span", {"class": "glyphicon glyphicon-trash"}, deleteAttachmentContainer, "first");
+
                           on(deleteAttachmentContainer, "click", lang.hitch(this, function () {
                             this._deleteAttachment(attachment);
                           }));

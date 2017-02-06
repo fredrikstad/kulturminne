@@ -120,6 +120,7 @@ define([
                         popupContentPane.set("content", result.features[0].getContent());
                         this._checkAttachments();
                         this._createEditFormButton();
+                        this._deleteFeatureButton(result.features[0]);
                     }
                 }));
             }
@@ -136,6 +137,41 @@ define([
                 this._createPopupForm();
             }));
         },
+
+        /**
+        * This function is used to create delete feature button
+        * @memberOf widgets/details-panel/popup
+        */
+        _deleteFeatureButton: function (graphic) {
+            var deleteFeatureBtnDiv;
+            deleteFeatureBtnDiv = domConstruct.create("div", {
+              "class": "btn btn-sm btn-danger esriCTDeleteFeatureButton",
+              "innerHTML": this.appConfig.i18n.detailsPanel.delete,
+              "title": this.appConfig.i18n.detailsPanel.deleteContentText
+            }, this.popupContainer);
+            domConstruct.create("span", {"class": "glyphicon glyphicon-trash"}, deleteFeatureBtnDiv, "first");
+            on(deleteFeatureBtnDiv, "click", lang.hitch(this, function () {
+
+              if (confirm(this.appConfig.i18n.detailsPanel.verifyDelete)) {
+                graphic.attributes.SLETTET = 'Ja';
+                this.appUtils.showLoadingIndicator();
+                this.selectedOperationalLayer.applyEdits(null, [graphic], null, lang.hitch(this, function () { //ignore jslint
+
+                  this.selectedOperationalLayer.refresh();
+                  //Hide loading indicator
+                  this.appUtils.hideLoadingIndicator();
+                }), lang.hitch(this, function (err) {
+                    //Hide loading indicator
+                    this.appUtils.hideLoadingIndicator();
+                    // Show error message
+                    this.appUtils.showError(err);
+                }));
+              } else {
+                console.log('Do nothing');
+              }
+            }));
+        },
+
 
         /**
         * create form to update feature attributes
@@ -163,7 +199,7 @@ define([
             // attach handler on save button click
             this.popupFormInstance.onPopupFormSubmitted = lang.hitch(this, function (feature) {
                 if ((!this.isShowSelectedClicked) || ((this.isShowSelectedClicked) && (this.multipleFeatures) && (this.multipleFeatures.length === 1))) {
-                    // Close the comment form after submitting new comment
+                    // Close the popup form after submitting new comment
                     this._hidePanel(this.popupFormContainer);
                     this._showPanel(this.popupInfoParentContainer);
                 }

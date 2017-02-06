@@ -474,7 +474,7 @@ define([
         * @memberOf widgets/details-panel/inspections
         */
         _deleteInspectionButton: function (parentDiv, graphic) {
-            var inspectionBtnDiv;
+            var deleteInspectionBtnDiv;
             deleteInspectionBtnDiv = domConstruct.create("div", {
               "class": "btn btn-sm btn-danger esriCTDeleteInspectionButton",
               "innerHTML": this.appConfig.i18n.detailsPanel.delete,

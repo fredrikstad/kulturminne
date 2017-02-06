@@ -475,13 +475,13 @@ define([
         */
         _deleteInspectionButton: function (parentDiv, graphic) {
             var inspectionBtnDiv;
-            inspectionBtnDiv = domConstruct.create("div", {
+            deleteInspectionBtnDiv = domConstruct.create("div", {
               "class": "btn btn-sm btn-danger esriCTDeleteInspectionButton",
               "innerHTML": this.appConfig.i18n.detailsPanel.delete,
               "title": this.appConfig.i18n.detailsPanel.deleteContentText
             }, parentDiv);
-            domConstruct.create("span", {"class": "glyphicon glyphicon-trash"}, inspectionBtnDiv, "first");
-            on(inspectionBtnDiv, "click", lang.hitch(this, function () {
+            domConstruct.create("span", {"class": "glyphicon glyphicon-trash"}, deleteInspectionBtnDiv, "first");
+            on(deleteInspectionBtnDiv, "click", lang.hitch(this, function () {
 
               if (confirm(this.appConfig.i18n.detailsPanel.verifyDelete)) {
                 graphic.attributes.SLETTET = 'Ja';

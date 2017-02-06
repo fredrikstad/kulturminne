@@ -267,6 +267,7 @@ define([
                 commentContentPane.set('content', this._entireCommentsArr[i][1].features[0].getContent());
                 this._checkAttachments(commentContentPaneContainer, i);
                 this._createCommentButton(commentContentPaneContainer, this._entireCommentsArr[i][1].features[0]);
+                this._deleteCommentButton(commentContentPaneContainer, this._entireCommentsArr[i][1].features[0]);
             }
             this.showCommentsTab();
             domAttr.set(dom.byId("commentsTotalCount"), "innerHTML", "(" + this._entireCommentsArr.length + ")");
@@ -466,6 +467,42 @@ define([
                 domStyle.set(this.commentsContainer, "display", "none");
             }));
         },
+
+        /**
+        * This function is used to create delete prikk button
+        * @memberOf widgets/details-panel/prikk
+        */
+        _deleteCommentButton: function (parentDiv, graphic) {
+            var deleteCommentBtnDiv;
+            deleteCommentBtnDiv = domConstruct.create("div", {
+              "class": "btn btn-sm btn-danger esriCTDeleteCommentButton",
+              "innerHTML": this.appConfig.i18n.detailsPanel.delete,
+              "title": this.appConfig.i18n.detailsPanel.deleteContentText
+            }, parentDiv);
+            domConstruct.create("span", {"class": "glyphicon glyphicon-trash"}, deleteCommentBtnDiv, "first");
+            on(deleteCommentBtnDiv, "click", lang.hitch(this, function () {
+
+              if (confirm(this.appConfig.i18n.detailsPanel.verifyDelete)) {
+                graphic.attributes.SLETTET = 'Ja';
+                this.appUtils.showLoadingIndicator();
+                this._commentsTable.applyEdits(null, [graphic], null, lang.hitch(this, function () { //ignore jslint
+                  domConstruct.empty(this.commentsContainer);
+                  domStyle.set(this.commentsContainer, "display", "block");
+                  this._showComments(this.multipleFeatures[0], this.commentsContainer);
+                  //Hide loading indicator
+                  this.appUtils.hideLoadingIndicator();
+                }), lang.hitch(this, function (err) {
+                    //Hide loading indicator
+                    this.appUtils.hideLoadingIndicator();
+                    // Show error message
+                    this.appUtils.showError(err);
+                }));
+              } else {
+                console.log('Do nothing');
+              }
+            }));
+        },
+
 
         /**
         * This function is used hide comments Tab

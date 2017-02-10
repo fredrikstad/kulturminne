@@ -128,12 +128,12 @@ define({
     //Lower level configuration
     "submitReportButtonColor": "#35ac46", //Color for Submit Report button.If EMPTY default color will be  #35ac46.
     // to apply org theming
-    "headerBackgroundColor": "#f26e1f",
+    "headerBackgroundColor": "#005ce6",
     "headerTextColor": "#fff",
     "bodyBackgroundColor": "#fff",
     "bodyTextColor": "#515151",
     "buttonBackgroundColor": "#fff",
-    "buttonTextColor": "#f26e1f",
+    "buttonTextColor": "#005ce6",
     // to configure which tab will be opened by default when a report is selected.
     "defaultDetailsTab": "Info" // Info, Media, Comments
 });

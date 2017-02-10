@@ -174,7 +174,7 @@ define({
       "attachmentSelectedMsg": "Vedlegg valgt",
       "attachmentHeaderText": "Vedlegg",
       "addRecordText": "Legg til post",
-      "unknownCommentAttachment": "FIL",
-      "unableToAddOrEditCommentMessage": "å_You do not have permission to perform this action________________ø."
+      "unknownInspectionAttachment": "FIL",
+      "unableToAddOrEditInspectionMessage": "å_You do not have permission to perform this action________________ø."
   },
 });

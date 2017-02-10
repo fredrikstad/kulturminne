@@ -67,12 +67,14 @@ define([
 ) {
     return declare([_WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin], {
         templateString: template,
+
         _inspectionPopupTable: null, // stores object of inspections popup table
         _relatedRecords: [], // stores object of related record features
         _inspectionformInstance: null, // to store instance of inspections form
         _addInspectionBtnClickHandle: null, // to store click handle of add inspections button
         _entireInspectionsArr: null, // to store inspections
         _entireAttachmentsArr: null, // to store attachments
+
         i18n: {}, // to stores nls strings
 
         /**
@@ -86,7 +88,8 @@ define([
         },
 
         /**
-        * This function is designed to handle processing after any DOM fragments have been actually added to the document.
+        * This function is designed to handle processing after any DOM fragments
+        * have been actually added to the document.
         * @memberOf widgets/details-panel/inspections
         */
         startup: function () {
@@ -95,7 +98,8 @@ define([
 
         /**
         * Method will get related table info and check if any relationship exist for inspections.
-        * If Inspections relationship exist as per the configured field then it will get the related table info for further use
+        * If Inspections relationship exist as per the configured field then
+        * it will get the related table info for further use
         * Considering only the first related table although the layer has many related table
         * @memberOf widgets/details-panel/inspections
         */
@@ -108,8 +112,9 @@ define([
             if (this.selectedOperationalLayer.relationships.length > 0) {
                 // Construct the related table URL form operational layer URL and the related table id
                 // We are considering only first related table although the layer has many related table.
-                // Hence, we are fetching relatedTableId from relationships[0] ie:"operationalLayer.relationships[0].relatedTableId"
-                // Create Inspections table if not exist from the first related table of the layer
+                // Hence, we are fetching relatedTableId from relationships[0]
+                // ie: "operationalLayer.relationships[0].relatedTableId"
+                // Create inspections table if not exist from the first related table of the layer
                 if (!this._inspectionsTable) {
                     relatedTableURL = this.selectedOperationalLayer.url.substr(0, this.selectedOperationalLayer.url.lastIndexOf('/') + 1) + this.selectedOperationalLayer.relationships[1].relatedTableId;
                     this._inspectionsTable = new FeatureLayer(relatedTableURL);
@@ -369,7 +374,7 @@ define([
                     on(imageThumbnailContainer, "click", lang.hitch(this, this._displayImageAttachments));
                     //Create delete attachment button
                     deleteAttachmentContainer = domConstruct.create("div", {
-                      "class": "esriCTDeleteAttachmentButton esriCTApplicationColor",
+                      "class": "esriCTDeleteAttachmentButton btn-danger",
                       "id": attachment.id,
                       "innerHTML": this.appConfig.i18n.detailsPanel.delete
                     }, attachmentWrapper);
@@ -425,7 +430,7 @@ define([
             if (fileExtension && fileExtension[1]) {
                 typeText = "." + fileExtension[1].toUpperCase();
             } else {
-                typeText = this.appConfig.i18n.comment.unknownCommentAttachment;
+                typeText = this.appConfig.i18n.inspection.unknownInspectionAttachment;
             }
             domAttr.set(fileTypeContainer, "innerHTML", typeText);
         },
@@ -460,12 +465,22 @@ define([
         */
         _createInspectionButton: function (parentDiv, graphic) {
             var inspectionBtnDiv;
-            inspectionBtnDiv = domConstruct.create("div", { "class": "esriCTInspectionButton", "title": this.appConfig.i18n.detailsPanel.editContentText }, parentDiv);
+            inspectionBtnDiv = domConstruct.create("div", {
+              "class": "esriCTInspectionButton esrictfonticons esrictfonticons-pencil esriCTBodyTextColor",
+              "title": this.appConfig.i18n.detailsPanel.editContentText
+            }, parentDiv);
             on(inspectionBtnDiv, "click", lang.hitch(this, function () {
-                this.appUtils.showLoadingIndicator();
-                domClass.add(this.addInspectionsBtnWrapperContainer, "esriCTHidden");
-                this._createInspectionForm(graphic, false);
-                domStyle.set(this.inspectionsContainer, "display", "none");
+                if (this.appConfig.logInDetails.canEditFeatures) {
+                    this.appUtils.showLoadingIndicator();
+                    domClass.add(this.addInspectionsBtnWrapperContainer, "esriCTHidden");
+                    this._createInspectionForm(graphic, false);
+                    domStyle.set(this.inspectionsContainer, "display", "none");
+                    $('#tabContent').animate({
+                        scrollTop: 0
+                    });
+                } else {
+                    this.appUtils.showMessage(this.appConfig.i18n.inspection.unableToAddOrEditInspectionMessage);
+                }
             }));
         },
 
@@ -613,9 +628,14 @@ define([
                 this._addInspectionBtnClickHandle.remove();
             }
             if (this.addInspectionsBtnWrapperContainer) {
-                this._addInspectionBtnClickHandle = on(this.addInspectionsBtnWrapperContainer, "click", lang.hitch(this, function () {
+                this._addInspectionBtnClickHandle = on(this.addInspectionsBtnWrapperContainer, "click",
+                lang.hitch(this, function () {
+                  if (this.appConfig.logInDetails.canEditFeatures) {
                     this.appUtils.showLoadingIndicator();
-                    this._openAddInspectionsForm();
+                    this._openAddCommentsForm();
+                  } else {
+                    this.appUtils.showMessage(this.appConfig.i18n.comment.unableToAddOrEditCommentMessage);
+                  }
                 }));
             }
         },

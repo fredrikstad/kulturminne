@@ -176,7 +176,7 @@ define({
             attachmentHeaderText: "Attachments", //attachment header Text
             unknownInspectionAttachment: "FILE", // displayed for attached file having unknown extension
             addRecordText: "Add Record", // shown to add record in inspections tab under details panel
-            unableToAddOrEditCommentMessage: "You do not have permission to perform this action." // to display message when unauthorized user tries to add/edit the comment
+            unableToAddOrEditInspectionMessage: "You do not have permission to perform this action." // to display message when unauthorized user tries to add/edit the inspection
         },
     }),
     "ar": 1,

@@ -80,7 +80,7 @@ define([
         /**
          * This function is called when widget is constructed
          * @param{object} parameters of widget
-         * @memberOf widgets/details-panel/comments
+         * @memberOf widgets/details-panel/prikk
          */
         constructor: function (options) {
             lang.mixin(this, options);
@@ -90,7 +90,7 @@ define([
         /**
          * This function is designed to handle processing after any DOM fragments
          * have been actually added to the document.
-         * @memberOf widgets/details-panel/comments
+         * @memberOf widgets/details-panel/prikk
          */
         startup: function () {
             this._showComments(this.multipleFeatures[0], this.commentsContainer);
@@ -101,7 +101,7 @@ define([
          * If Comments relationship exist as per the configured field then
          * it will get the related table info for further use
          * Considering only the first related table although the layer has many related table
-         * @memberOf widgets/details-panel/comments
+         * @memberOf widgets/details-panel/prikk
          */
         _showComments: function (graphic, parentDiv) {
             var relatedTableURL;
@@ -143,7 +143,7 @@ define([
 
         /**
          * This function is used to check whether comments are available or not to display
-         * @memberOf widgets/details-panel/comments
+         * @memberOf widgets/details-panel/prikk
          */
         _loadCommentsIfExist: function (graphic, parentDiv) {
             if ((this.appConfig.usePopupConfigurationForComment) && (this._commentPopupTable) && (this._hasEditableField())) {
@@ -159,7 +159,7 @@ define([
         /**
          * This function is used to fetch comments from table
          * @param {object} graphic contains related feature object
-         * @memberOf widgets/details-panel/comments
+         * @memberOf widgets/details-panel/prikk
          */
         _fetchComments: function (graphic, parentDiv) {
             var relatedQuery, currentID;
@@ -212,7 +212,7 @@ define([
 
         /**
          * This function is used to get all the comments
-         * @memberOf widgets/details-panel/comments
+         * @memberOf widgets/details-panel/prikk
          */
         _getAllComments: function (deferredListArr) {
             var deferredList;
@@ -237,7 +237,7 @@ define([
 
         /**
          * This function is used to get all the attachments
-         * @memberOf widgets/details-panel/comments
+         * @memberOf widgets/details-panel/prikk
          */
         _getAllAttachments: function () {
             var deferredList, deferredListArr, i;
@@ -257,7 +257,7 @@ define([
 
         /**
          * This function is used display comments and attachments
-         * @memberOf widgets/details-panel/comments
+         * @memberOf widgets/details-panel/prikk
          */
         _displayCommentsAndAttachments: function () {
             var i, commentContentPaneContainer, commentContentPane, commentsParentDiv;
@@ -281,7 +281,7 @@ define([
 
         /**
          * This function is used to check whether one of the field is editable or not
-         * @memberOf widgets/details-panel/comments
+         * @memberOf widgets/details-panel/prikk
          */
         _hasEditableField: function () {
             var hasEditableField = false, k;
@@ -298,7 +298,7 @@ define([
 
         /**
          * This function is used to check whether comment's field that is configured is available in comments table or not.
-         * @memberOf widgets/details-panel/comments
+         * @memberOf widgets/details-panel/prikk
          */
         _hasCommentsField: function () {
             var k, hasCommentField = false;
@@ -316,7 +316,7 @@ define([
 
         /**
          * This function is used to create common popup comment contents
-         * @memberOf widgets/details-panel/comments
+         * @memberOf widgets/details-panel/prikk
          */
         _createPopUpContent: function (currentFeature) {
             var queryFeature, currentDateTime = new Date().getTime();
@@ -330,7 +330,7 @@ define([
 
         /**
          * Check whether attachments are available in layer and enabled in webmap
-         * @memberOf widgets/details-panel/comments
+         * @memberOf widgets/details-panel/prikk
          */
         _checkAttachments: function (commentContentPaneContainer, index) {
             if (this._commentsTable.hasAttachments) {
@@ -348,7 +348,7 @@ define([
          * Query layer to get attachments
          * @param{object} graphic
          * @param{object} attachmentContainer
-         * @memberOf widgets/details-panel/comments
+         * @memberOf widgets/details-panel/prikk
          */
         _showAttachments: function (attachmentContainer, index) {
             var fieldContent, i, attachment, deleteAttachmentContainer, attachmentWrapper, imageThumbnailContainer, imageThumbnailContent, imageContainer, fileTypeContainer, isAttachmentAvailable, imagePath, imageDiv;
@@ -374,10 +374,11 @@ define([
                     on(imageThumbnailContainer, "click", lang.hitch(this, this._displayImageAttachments));
                     //Create delete attachment button
                     deleteAttachmentContainer = domConstruct.create("div", {
-                      "class": "esriCTDeleteAttachmentButton esriCTApplicationColor",
+                      "class": "esriCTDeleteAttachmentButton btn-danger",
                       "id": attachment.id,
                       "innerHTML": this.appConfig.i18n.detailsPanel.delete
                     }, attachmentWrapper);
+                    domConstruct.create("span", {"class": "glyphicon glyphicon-trash"}, deleteAttachmentContainer, "first");
                     on(deleteAttachmentContainer, "click", lang.hitch(this, function () {
                       this._deleteAttachment(attachment);
                     }));
@@ -518,7 +519,6 @@ define([
             }));
         },
 
-
         /**
         * This function is used hide comments Tab
         * @memberOf widgets/details-panel/prikk
@@ -600,7 +600,7 @@ define([
 
         /**
          * shows and hides the div content
-         * @memberOf widgets/details-panel/comments
+         * @memberOf widgets/details-panel/prikk
          */
         _showPanel: function (domNode) {
             if (domClass.contains(domNode, "esriCTHidden")) {
@@ -612,7 +612,7 @@ define([
 
         /**
          * Empties the list of comments.
-         * @memberOf widgets/details-panel/comments
+         * @memberOf widgets/details-panel/prikk
          */
         _clearComments: function () {
             domConstruct.empty(this.commentsList);
@@ -621,7 +621,7 @@ define([
 
         /**
          * This function is used to attach click event to add comment button
-         * @memberOf widgets/details-panel/comments
+         * @memberOf widgets/details-panel/prikk
          */
         _attachEventToAddCommentButton: function () {
             if (this._addCommentBtnClickHandle) {
@@ -642,7 +642,7 @@ define([
 
         /**
          * This function is used to open add comments form
-         * @memberOf widgets/details-panel/comments
+         * @memberOf widgets/details-panel/prikk
          */
         _openAddCommentsForm: function () {
             var item = {};
@@ -657,7 +657,7 @@ define([
         /**
          * This function is used to create popup template for single field
          * @param {object} currentFeature contains selected feature object
-         * @memberOf widgets/details-panel/comments
+         * @memberOf widgets/details-panel/prikk
          */
         _createPopUpForSingleField: function (currentFeature) {
             var popupInfo = {}, k, singlefieldComment;
@@ -694,7 +694,7 @@ define([
         /**
          * sets the comments associated with an item.
          * @param {array} commentsArr contains related features array
-         * @memberOf widgets/details-panel/comments
+         * @memberOf widgets/details-panel/prikk
          */
         _setComments: function (commentsArr) {
             domConstruct.empty(this.commentsContainer);
@@ -704,7 +704,7 @@ define([
         /**
          * display popup info for related features
          * @param {object} item is selected related feature
-         * @memberOf widgets/details-panel/comments
+         * @memberOf widgets/details-panel/prikk
          */
         _buildCommentDiv: function (item) {
             var commentDiv;

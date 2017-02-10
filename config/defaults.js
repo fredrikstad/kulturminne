@@ -41,7 +41,7 @@ define({
     "markerSymbolHeight": 26,
     "helperServices": {
         "geometry": {
-            "url": "http://tasks.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer"
+            "url": "http://kart.fredrikstad.kommune.no/arcgis/rest/services/Utilities/Geometry/GeometryServer"
         },
         "printTask": {
             "url": null

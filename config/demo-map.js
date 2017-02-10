@@ -1,8 +1,8 @@
 define({
   "item": {
-    "id": "24e01ef45d40423f95300ad2abc5038a",
-    "owner": "khutchins_jsapi",
-    "orgId": "V6ZHFr6zdgNZuVG0",
+    "id": "37771e42edd84354b74116b9174fb6fe",
+    "owner": "ermtes",
+    "orgId": "9531502726",
     "created": 1386962036000,
     "modified": 1425412391000,
     "guid": null,
@@ -15,7 +15,7 @@ define({
     "snippet": "A heat map showing the concentration of farmers markets across the US.",
     "thumbnail": "thumbnail/ago_downloaded.png",
     "documentation": null,
-    "extent": [[-123.4521, 46.9231], [-121.0021, 48.0258]],
+    "extent": [[11.906, 58.9231], [9.861, 60.0464]],
     "spatialReference": null,
     "accessInformation": null,
     "licenseInfo": null,

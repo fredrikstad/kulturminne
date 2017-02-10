@@ -38,7 +38,9 @@ define([
     "esri/dijit/LocateButton",
     "esri/dijit/HomeButton",
     "esri/tasks/locator",
-    "esri/geometry/webMercatorUtils"
+    "esri/geometry/webMercatorUtils",
+    "dojo/colors",
+    "dojox/color"
 ], function (
     domClass,
     ThemeCss,
@@ -62,38 +64,41 @@ define([
     LocateButton,
     HomeButton,
     Locator,
-    webMercatorUtils
+    webMercatorUtils,
+    Colors,
+    dojoxColor
 ) {
     return {
+
         /**
-        * This function is used to show loading indicator.
-        * @memberOf utils/utils
-        */
+         * This function is used to show loading indicator.
+         * @memberOf utils/utils
+         */
         showLoadingIndicator: function () {
             domClass.add(document.body, "app-loading");
         },
 
         /**
-        * This function is used to hide loading indicator.
-        * @memberOf utils/utils
-        */
+         * This function is used to hide loading indicator.
+         * @memberOf utils/utils
+         */
         hideLoadingIndicator: function () {
             domClass.remove(document.body, "app-loading");
         },
 
         /**
-        * This function is used to hide overlay container.
-        * @memberOf utils/utils
-        */
+         * This function is used to hide overlay container.
+         * @memberOf utils/utils
+         */
         hideOverlayContainer: function () {
             var overlayContainer = dom.byId("overlayContainer");
             domClass.add(overlayContainer, "esriCTHidden");
         },
 
         /**
-        * This function is used to show overlay container.
-        * @memberOf utils/utils
-        */
+         * This function is used to show overlay container.
+         * @memberOf utils/utils
+         */
         showOverlayContainer: function () {
             var overlayContainer = dom.byId("overlayContainer");
             if (overlayContainer) {
@@ -102,40 +107,91 @@ define([
         },
 
         /**
-        * This function is used to show error
-        * @param {string} error to be shown
-        * @memberOf utils/utils
-        */
+         * This function is used to show error
+         * @param {string} error to be shown
+         * @memberOf utils/utils
+         */
         showError: function (error) {
             alert(error);
         },
 
         /**
-        * This function is used to show message.
-        * @param {string} message to be shown
-        * @memberOf utils/utils
-        */
+         * This function is used to show message.
+         * @param {string} message to be shown
+         * @memberOf utils/utils
+         */
         showMessage: function (message) {
             alert(message);
         },
 
         /**
-        * This function is used to load application theme.
-        * @param{object} application configuration
-        * @memberOf utils/utils
-        */
+         * This function is used set the theming according to org theming
+         * @param{object} application configuration
+         * @memberOf utils/utils
+         */
+        _setOrgTheme: function (appConfig) {
+            appConfig.appTheme = {
+                "header": {
+                    "background": appConfig.headerBackgroundColor,
+                    "text": appConfig.headerTextColor
+                },
+                "body": {
+                    "background": appConfig.bodyBackgroundColor,
+                    "text": appConfig.bodyTextColor
+                },
+                "button": {
+                    "background": appConfig.buttonBackgroundColor,
+                    "text": appConfig.buttonTextColor
+                }
+            };
+            //if logo is not configured by user and in org properties we have valid logo then only use the logo from org
+            if (!appConfig.applicationIcon && appConfig.appTheme.logo && appConfig.appTheme.logo.small) {
+                appConfig.applicationIcon = appConfig.appTheme.logo.small;
+            }
+            // calculated colors according to configuration
+            appConfig.appTheme.body.calculatedBackground =
+                this.getCalculatedColor(appConfig.appTheme.body.background, 50, 6);
+            appConfig.appTheme.body.calculatedText =
+                this.getCalculatedColor(appConfig.appTheme.body.text, 50, 21);
+            appConfig.appTheme.header.calculatedBackground =
+                this.getCalculatedColor(appConfig.appTheme.header.background, 70, 18);
+            appConfig.appTheme.header.calculatedText =
+                this.getCalculatedColor(appConfig.appTheme.header.text, 50, 27);
+        },
+
+        /**
+         * This function is used to load application theme.
+         * @param{object} application configuration
+         * @memberOf utils/utils
+         */
         loadApplicationTheme: function (appConfig) {
             var cssString, head, style, link, rgbColor;
-            //if theme is configured
+            // if theme is configured
             if (appConfig.theme) {
+                // Set the org theme for application
+                this._setOrgTheme(appConfig);
                 //Convert hex color to rgb and add opacity to get lighter shade of configured color
                 rgbColor = new Color(appConfig.theme);
                 rgbColor.a = 0.6;
                 //substitute theme color values in theme template
                 cssString = string.substitute(ThemeCss, {
+                    /** Default theming */
                     SelectedThemeColor: appConfig.theme,
                     LighterShadeThemeColor: rgbColor,
-                    HighlightedRowColor: appConfig.highlightRow
+                    HighlightedRowColor: appConfig.highlightRow,
+                    /** Org Theming */
+                    // Configured/Org colors for app theme
+                    BodyBackgroundColor: appConfig.appTheme.body.background,
+                    BodyTextColor: appConfig.appTheme.body.text,
+                    HeaderBackgroundColor: appConfig.appTheme.header.background,
+                    HeaderTextColor: appConfig.appTheme.header.text,
+                    ButtonBackgroundColor: appConfig.appTheme.button.background,
+                    ButtonTextColor: appConfig.appTheme.button.text,
+                    // Calculated colors
+                    CalculatedBodyBackgroundColor: appConfig.appTheme.body.calculatedBackground,
+                    CalculatedBodyTextColor: appConfig.appTheme.body.calculatedText,
+                    CalculatedHeaderBackgroundColor: appConfig.appTheme.header.calculatedBackground,
+                    CalculatedHeaderTextColor: appConfig.appTheme.header.calculatedText
                 });
                 //Create Style using theme template and append it to head
                 //On Lower versions of IE10 Style tag is read only so create theme using styleSheet.cssText
@@ -160,10 +216,10 @@ define([
         },
 
         /**
-        * This function is used to get format of date
-        * @param{string} type of date
-        * @memberOf utils/utils
-        */
+         * This function is used to get format of date
+         * @param{string} type of date
+         * @memberOf utils/utils
+         */
         getDateFormat: function (type) {
             var obj = {};
             switch (type) {
@@ -329,31 +385,31 @@ define([
                 domClass.remove(node, "esriCTPlaceholder");
             }
         },
-        
+
         /**
-        * This function is used to convert number to thousand separator
-        * @param{integer} number that needs to be converted into thousand separator
-        * @memberOf utils/utils
-        */
+         * This function is used to convert number to thousand separator
+         * @param{integer} number that needs to be converted into thousand separator
+         * @memberOf utils/utils
+         */
         convertNumberToThousandSeparator: function (number, decimalPlace) {
             return numberformatter.format(number, { places: decimalPlace });
         },
 
         /**
-        * To determine the android operating system
-        * @returns {bool}
-        * @memberOf utils/utils
-        */
+         * To determine the android operating system
+         * @returns {bool}
+         * @memberOf utils/utils
+         */
         isAndroid: function () {
             var ua = navigator.userAgent.toLowerCase();
             return ua.indexOf("android") > -1;
         },
 
         /**
-        * To determine the ios operating system
-        * @returns {bool}
-        * @memberOf utils/utils
-        */
+         * To determine the ios operating system
+         * @returns {bool}
+         * @memberOf utils/utils
+         */
         isIos: function () {
             var ua = navigator.userAgent.toLowerCase();
             return ua.indexOf("ipad") > -1;
@@ -380,5 +436,25 @@ define([
                 this.onLocationToAddressFailed(err);
             });
         },
+
+        /**
+         * This function is used to get the calculated color from the configured color in org json
+         * @returns {bool}
+         * @memberOf utils/utils
+         */
+        getCalculatedColor: function (configuredColor, luminosityDifference, luminosity) {
+            var calculatedColor, calculatedHexColor, configuredColorObject, configuredColorHSLObject;
+            configuredColorObject = new Colors(configuredColor);
+            configuredColorHSLObject = configuredColorObject.toHsl();
+            if (configuredColorHSLObject.l < luminosityDifference) {
+                calculatedColor = dojoxColor.fromHsl(configuredColorHSLObject.h,
+                    configuredColorHSLObject.s, configuredColorHSLObject.l + luminosity);
+            } else {
+                calculatedColor = dojoxColor.fromHsl(configuredColorHSLObject.h,
+                    configuredColorHSLObject.s, configuredColorHSLObject.l - luminosity);
+            }
+            calculatedHexColor = calculatedColor.toHex();
+            return calculatedHexColor;
+        }
     };
 });

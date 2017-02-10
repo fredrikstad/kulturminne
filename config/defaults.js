@@ -123,7 +123,17 @@ define({
     "inspectionFormAttachmentSectionLabel": "Attachments",
     // to show as a label for attachment section in comments form where attachments can be added
     "commentFormAttachmentSectionLabel": "Attachments",
+    // configurable message to indicate that the user has sucessfully submitted a new report
     "submitMessage": "Thank you! Your report has been submitted.",
     //Lower level configuration
-    "submitReportButtonColor": "#35ac46" //Color for Submit Report button.If EMPTY default color will be  #35ac46.
+    "submitReportButtonColor": "#35ac46", //Color for Submit Report button.If EMPTY default color will be  #35ac46.
+    // to apply org theming
+    "headerBackgroundColor": "#f26e1f",
+    "headerTextColor": "#fff",
+    "bodyBackgroundColor": "#fff",
+    "bodyTextColor": "#515151",
+    "buttonBackgroundColor": "#fff",
+    "buttonTextColor": "#f26e1f",
+    // to configure which tab will be opened by default when a report is selected.
+    "defaultDetailsTab": "Info" // Info, Media, Comments
 });

@@ -1,4 +1,4 @@
-﻿/*global define */
+﻿/*global define,$ */
 /*jslint sloppy:true */
 /*
 | Copyright 2014 Esri
@@ -52,28 +52,31 @@ define([
 ) {
     return declare([_WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin], {
         templateString: template,
+
         _popupWidgetObj: null, // to store object of popup widget
         _mediaWidgetObj: null, // to store object of media widget
         _commentsWidgetObj: null, // to store object of comments widget
         _inspectionsWidgetObj: null, // to store object of inspections widget
+
         i18n: {}, // to store nls object
         isShowSelectedClicked: null, // to notify that show all option is clicked
         isShowAllClicked: null, // to notify that show all option is clicked
 
         /**
-        * This function is called when widget is constructed
-        * @param{object} parameters of widget
-        * @memberOf widgets/details-panel/details-panel
-        */
+         * This function is called when widget is constructed
+         * @param{object} parameters of widget
+         * @memberOf widgets/details-panel/details-panel
+         */
         constructor: function (options) {
             lang.mixin(this, options);
             this.i18n = this.appConfig.i18n;
         },
 
         /**
-        * This function is designed to handle processing after any DOM fragments have been actually added to the document.
-        * @memberOf widgets/details-panel/details-panel
-        */
+         * This function is designed to handle processing after any DOM fragments
+         * have been actually added to the document.
+         * @memberOf widgets/details-panel/details-panel
+         */
         startup: function () {
             //if no selection made from data viewer then hide Details Panel
             if (this.multipleFeatures.length === 0) {
@@ -124,17 +127,17 @@ define([
         },
 
         /**
-        * This function is used to hide webmap list
-        * @memberOf widgets/details-panel/details-panel
-        */
+         * This function is used to hide webmap list
+         * @memberOf widgets/details-panel/details-panel
+         */
         hideWebMapList: function () {
             return;
         },
 
         /**
-        * This function is used to initialize popup tab
-        * @memberOf widgets/details-panel/details-panel
-        */
+         * This function is used to initialize popup tab
+         * @memberOf widgets/details-panel/details-panel
+         */
         _initializePopupWidget: function () {
             var popupParameters = {};
             popupParameters = {
@@ -150,15 +153,16 @@ define([
                 "isShowAllClicked": this.isShowAllClicked
             };
             // Initialize popup widget
-            this._popupWidgetObj = new PopupTab(popupParameters, domConstruct.create("div", {}, dom.byId("popupWrapperContainer")));
+            this._popupWidgetObj =
+                new PopupTab(popupParameters, domConstruct.create("div", {}, dom.byId("popupWrapperContainer")));
             this._attachPopupEventListener();
             this._popupWidgetObj.startup();
         },
 
         /**
-        * attach event listener for popup
-        * @memberOf widgets/details-panel/details-panel
-        */
+         * attach event listener for popup
+         * @memberOf widgets/details-panel/details-panel
+         */
         _attachPopupEventListener: function () {
             this._popupWidgetObj.onFeatureUpdated = lang.hitch(this, function (feature, isShowSelectedClicked) {
                 this.onFeatureUpdated(feature, isShowSelectedClicked);
@@ -172,33 +176,33 @@ define([
         },
 
         /**
-        * This function is used to declare that edit mode is enabled in popup tab
-        * @memberOf widgets/details-panel/details-panel
-        */
+         * This function is used to declare that edit mode is enabled in popup tab
+         * @memberOf widgets/details-panel/details-panel
+         */
         popupEditModeEnabled: function (isEditMode) {
             return isEditMode;
         },
 
         /**
-        * handler when feature is updated from popup form
-        * @memberOf widgets/details-panel/details-panel
-        */
+         * handler when feature is updated from popup form
+         * @memberOf widgets/details-panel/details-panel
+         */
         onFeatureUpdated: function (features) {
             return features;
         },
 
         /**
-        * handler when multiple feature editing is canceled
-        * @memberOf widgets/details-panel/details-panel
-        */
+         * handler when multiple feature editing is canceled
+         * @memberOf widgets/details-panel/details-panel
+         */
         onMultipleFeatureEditCancel: function (features) {
             return features;
         },
 
         /**
-        * This function is used to initialize media tab
-        * @memberOf widgets/details-panel/details-panel
-        */
+         * This function is used to initialize media tab
+         * @memberOf widgets/details-panel/details-panel
+         */
         _initializeMediaWidget: function () {
             var mediaParameters;
             if (this.multipleFeatures.length === parseInt(1, 10)) {
@@ -213,7 +217,8 @@ define([
                     "multipleFeatures": this.multipleFeatures
                 };
                 // Initialize media widget
-                this._mediaWidgetObj = new Media(mediaParameters, domConstruct.create("div", {}, dom.byId("mediaWrapperContainer")));
+                this._mediaWidgetObj =
+                    new Media(mediaParameters, domConstruct.create("div", {}, dom.byId("mediaWrapperContainer")));
                 this._attachMediaTabEvents();
                 this._mediaWidgetObj.startup();
             } else {
@@ -222,13 +227,12 @@ define([
         },
 
         /**
-        * This function is used to initialize comments tab
-        * @memberOf widgets/details-panel/details-panel
-        */
+         * This function is used to initialize comments tab
+         * @memberOf widgets/details-panel/details-panel
+         */
         _initializeCommentsWidget: function () {
             var commentsParameters;
             //if no record is selected from table then hide all tabs
-
             if (this.multipleFeatures.length === 1) {
                 // Initialize comments widget
                 commentsParameters = {
@@ -240,7 +244,9 @@ define([
                     "itemInfo": this.itemInfo,
                     "multipleFeatures": this.multipleFeatures
                 };
-                this._commentsWidgetObj = new Comments(commentsParameters, domConstruct.create("div", {}, dom.byId("commentsWrapperContainer")));
+                this._commentsWidgetObj =
+                    new Comments(commentsParameters, domConstruct.create("div", {},
+                        dom.byId("commentsWrapperContainer")));
                 this._attachCommentsEventListener();
                 this._commentsWidgetObj.startup();
             } else {
@@ -252,9 +258,9 @@ define([
         },
 
         /**
-        * This function is used to attach event listener to comments widget
-        * @memberOf widgets/details-panel/details-panel
-        */
+         * This function is used to attach event listener to comments widget
+         * @memberOf widgets/details-panel/details-panel
+         */
         _attachCommentsEventListener: function () {
             this._commentsWidgetObj.hideCommentsTab = lang.hitch(this, function () {
                 this._hideDetailsPanelTab("comments");
@@ -262,6 +268,9 @@ define([
 
             this._commentsWidgetObj.showCommentsTab = lang.hitch(this, function () {
                 this._showDetailsPanelTab("comments");
+                if (this.appConfig.defaultDetailsTab && this.appConfig.defaultDetailsTab === "Comments") {
+                    $('.nav-tabs a[href="#' + "commentsTabPanel" + '"]').tab('show');
+                }
                 this._displayTabList();
             });
         },
@@ -312,9 +321,9 @@ define([
         },
 
         /**
-        * This function is used to destroy popup widget.
-        * @memberOf widgets/details-panel/details-panel
-        */
+         * This function is used to destroy popup widget.
+         * @memberOf widgets/details-panel/details-panel
+         */
         destroyPopupWidget: function () {
             if (this._popupWidgetObj) {
                 this._popupWidgetObj.destroy();
@@ -322,9 +331,9 @@ define([
         },
 
         /**
-        * This function is used to destroy media widget.
-        * @memberOf widgets/details-panel/details-panel
-        */
+         * This function is used to destroy media widget.
+         * @memberOf widgets/details-panel/details-panel
+         */
         destroyMediaWidget: function () {
             if (this._mediaWidgetObj) {
                 this._mediaWidgetObj.destroy();
@@ -332,9 +341,9 @@ define([
         },
 
         /**
-        * This function is used to destroy comments widget.
-        * @memberOf widgets/details-panel/details-panel
-        */
+         * This function is used to destroy comments widget.
+         * @memberOf widgets/details-panel/details-panel
+         */
         destroyCommentsWidget: function () {
             if (this._commentsWidgetObj) {
                 this._commentsWidgetObj.destroy();
@@ -352,10 +361,10 @@ define([
         },
 
         /**
-        * This function is used to hide navigation tabs based on availability of data
-        * @param{object} tab name
-        * @memberOf widgets/details-panel/details-panel
-        */
+         * This function is used to hide navigation tabs based on availability of data
+         * @param{object} tab name
+         * @memberOf widgets/details-panel/details-panel
+         */
         _hideDetailsPanelTab: function (tabName) {
             var tab = dom.byId(tabName + "Tab");
             if (tab) {
@@ -364,10 +373,10 @@ define([
         },
 
         /**
-        * This function is used to hide navigation tabs based on availability of data
-        * @param{object} tab name
-        * @memberOf widgets/details-panel/details-panel
-        */
+         * This function is used to hide navigation tabs based on availability of data
+         * @param{object} tab name
+         * @memberOf widgets/details-panel/details-panel
+         */
         _showDetailsPanelTab: function (tabName) {
             var tab = dom.byId(tabName + "Tab");
             if (tab) {
@@ -376,15 +385,18 @@ define([
         },
 
         /**
-        * This function is used to attach media tab events
-        * @memberOf widgets/details-panel/details-panel
-        */
+         * This function is used to attach media tab events
+         * @memberOf widgets/details-panel/details-panel
+         */
         _attachMediaTabEvents: function () {
             this._mediaWidgetObj.hideMediaTab = lang.hitch(this, function () {
                 this._hideDetailsPanelTab("media");
             });
             this._mediaWidgetObj.showMediaTab = lang.hitch(this, function () {
                 this._showDetailsPanelTab("media");
+                if (this.appConfig.defaultDetailsTab && this.appConfig.defaultDetailsTab === "Media") {
+                    $('.nav-tabs a[href="#' + "mediaTabPanel" + '"]').tab('show');
+                }
                 this._displayTabList();
             });
         },
@@ -401,9 +413,9 @@ define([
         },
 
         /**
-        * This function will call media widget's function which help to fit charts in the panel
-        * @memberOf widgets/details-panel/details-panel
-        */
+         * This function will call media widget's function which help to fit charts in the panel
+         * @memberOf widgets/details-panel/details-panel
+         */
         resizeChart: function () {
             if (this._mediaWidgetObj) {
                 this._mediaWidgetObj.showChartsOnResize();
@@ -411,9 +423,9 @@ define([
         },
 
         /**
-        * This function is used to notify that show selected is clicked
-        * @memberOf widgets/details-panel/details-panel
-        */
+         * This function is used to notify that show selected is clicked
+         * @memberOf widgets/details-panel/details-panel
+         */
         showSelectedClicked: function () {
             if (this._popupWidgetObj) {
                 this._popupWidgetObj.isShowSelectedClicked = true;
@@ -424,9 +436,9 @@ define([
         },
 
         /**
-        * This function is used to notify that show all is clicked
-        * @memberOf widgets/details-panel/details-panel
-        */
+         * This function is used to notify that show all is clicked
+         * @memberOf widgets/details-panel/details-panel
+         */
         showAllClicked: function () {
             if (this._popupWidgetObj) {
                 this._popupWidgetObj.isShowSelectedClicked = false;

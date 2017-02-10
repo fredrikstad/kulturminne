@@ -61,10 +61,10 @@ define([
         isShowAllClicked: null, // to notify that show all option is clicked
 
         /**
-        * This function is called when widget is constructed
-        * @param{object} options contains parameters of widget
-        * @memberOf widgets/details-panel/popup
-        */
+         * This function is called when widget is constructed
+         * @param{object} options contains parameters of widget
+         * @memberOf widgets/details-panel/popup
+         */
         constructor: function (options) {
             lang.mixin(this, options);
         },
@@ -75,9 +75,9 @@ define([
         },
 
         /**
-        * Show selected feature's popup content
-        * @memberOf widgets/details-panel/popup
-        */
+         * Show selected feature's popup content
+         * @memberOf widgets/details-panel/popup
+         */
         _showPopupPanel: function () {
             //check whether multiple features selected
             if (this.multipleFeatures.length === 1) {
@@ -98,9 +98,9 @@ define([
         },
 
         /**
-        * display popup content for selected feature
-        * @memberOf widgets/details-panel/popup
-        */
+         * display popup content for selected feature
+         * @memberOf widgets/details-panel/popup
+         */
         _displayPopupContent: function (selectedFeature) {
             if (selectedFeature) {
                 var queryFeature, currentDateTime = new Date().getTime();
@@ -127,14 +127,21 @@ define([
         },
 
         /**
-        * This function is used to create edit button
-        * @memberOf widgets/details-panel/popup
-        */
+         * This function is used to create edit button
+         * @memberOf widgets/details-panel/popup
+         */
         _createEditFormButton: function () {
-            var editFeatureButton = domConstruct.create("div", { "class": "esriCTEditFeatureButton", "title": this.appConfig.i18n.detailsPanel.editContentText }, this.popupContainer);
+            var editFeatureButton = domConstruct.create("div", {
+                "class": "esriCTEditFeatureButton esrictfonticons esrictfonticons-pencil esriCTBodyTextColor",
+                "title": this.appConfig.i18n.detailsPanel.editContentText
+            }, this.popupContainer);
             //attach 'click event on edit button to display form
             on(editFeatureButton, "click", lang.hitch(this, function () {
-                this._createPopupForm();
+                if (this.appConfig.logInDetails.canEditFeatures) {
+                    this._createPopupForm();
+                } else {
+                    this.appUtils.showMessage(this.appConfig.i18n.geoform.unableToEditPopupMessage);
+                }
             }));
         },
 
@@ -174,9 +181,9 @@ define([
 
 
         /**
-        * create form to update feature attributes
-        * @memberOf widgets/details-panel/popup
-        */
+         * create form to update feature attributes
+         * @memberOf widgets/details-panel/popup
+         */
         _createPopupForm: function () {
             //destroy existing popup-form instance
             if (this.popupFormInstance) {
@@ -210,9 +217,9 @@ define([
         },
 
         /**
-        * hide popup form on canceling editing
-        * @memberOf widgets/details-panel/popup
-        */
+         * hide popup form on canceling editing
+         * @memberOf widgets/details-panel/popup
+         */
         _onFeatureUpdateCancel: function () {
             // if not show selected
             // if show selected & only one features is selected
@@ -231,9 +238,9 @@ define([
         },
 
         /**
-        * shows and hides the div content
-        * @memberOf widgets/details-panel/popup
-        */
+         * shows and hides the div content
+         * @memberOf widgets/details-panel/popup
+         */
         _showPanel: function (domNode) {
             if (domClass.contains(domNode, "esriCTHidden")) {
                 domClass.remove(domNode, "esriCTHidden");
@@ -241,9 +248,9 @@ define([
         },
 
         /**
-        * shows and hides the div content
-        * @memberOf widgets/details-panel/popup
-        */
+         * shows and hides the div content
+         * @memberOf widgets/details-panel/popup
+         */
         _hidePanel: function (domNode) {
             if (!domClass.contains(domNode, "esriCTHidden")) {
                 domClass.add(domNode, "esriCTHidden");
@@ -251,25 +258,25 @@ define([
         },
 
         /**
-        * handler when popup form gets submitted successfully
-        * @memberOf widgets/details-panel/popup
-        */
+         * handler when popup form gets submitted successfully
+         * @memberOf widgets/details-panel/popup
+         */
         onFeatureUpdated: function (feature) {
             return feature;
         },
 
         /**
-        * handler when multiple feature editing gets canceled
-        * @memberOf widgets/details-panel/popup
-        */
+         * handler when multiple feature editing gets canceled
+         * @memberOf widgets/details-panel/popup
+         */
         onMultipleFeatureEditCancel: function (feature) {
             return feature;
         },
 
         /**
-        * check whether attachments are available in layer and enabled in webmap
-        * @memberOf widgets/details-panel/popup
-        **/
+         * check whether attachments are available in layer and enabled in webmap
+         * @memberOf widgets/details-panel/popup
+         */
         _checkAttachments: function () {
             if (this.selectedOperationalLayer.hasAttachments && this.popupInfo.showAttachments) {
                 var attachmentsDiv = $(".attachmentsSection", this.popupContainer)[0];
@@ -284,11 +291,11 @@ define([
         },
 
         /**
-        * query layer to get attachments
-        * @param{object} graphic
-        * @param{object} attachmentContainer
-        * @memberOf widgets/details-panel/popup
-        **/
+         * query layer to get attachments
+         * @param{object} graphic
+         * @param{object} attachmentContainer
+         * @memberOf widgets/details-panel/popup
+         */
         _showAttachments: function (graphic, attachmentContainer) {
             var objectID, fieldContent, imageDiv, imagePath, i, isAttachmentAvailable = false, imageThumbnailContainer, attachment, deleteAttachmentContainer, attachmentWrapper, imageThumbnailContent, imageContainer, fileTypeContainer;
             if (graphic) {
@@ -391,10 +398,10 @@ define([
         },
 
         /**
-        * Function to fetch document content type
-        * @param{object} attachment object
-        * @memberOf widgets/details-panel/popup
-        **/
+         * Function to fetch document content type
+         * @param{object} attachment object
+         * @memberOf widgets/details-panel/popup
+         */
         _fetchDocumentContentType: function (attachmentData, fileTypeContainer) {
             var typeText, fileExtensionRegEx, fileExtension;
             fileExtensionRegEx = /(?:\.([^.]+))?$/; //ignore jslint
@@ -408,11 +415,11 @@ define([
         },
 
         /**
-        * Function to fetch document name
-        * @param{object} attachment object
-        * @param{object} dom node
-        * @memberOf widgets/details-panel/popup
-        **/
+         * Function to fetch document name
+         * @param{object} attachment object
+         * @param{object} dom node
+         * @memberOf widgets/details-panel/popup
+         */
         _fetchDocumentName: function (attachmentData, container) {
             var attachmentNameWrapper, attachmentName;
             attachmentNameWrapper = domConstruct.create("div", {
@@ -426,27 +433,27 @@ define([
         },
 
         /**
-        * This function is used to show attachments in new window when user clicks on the attachment thumbnail
-        * @param{object} evt
-        * @memberOf widgets/details-panel/popup
-        **/
+         * This function is used to show attachments in new window when user clicks on the attachment thumbnail
+         * @param{object} evt
+         * @memberOf widgets/details-panel/popup
+         */
         _displayImageAttachments: function (evt) {
             window.open(domAttr.get(evt.currentTarget, "alt"));
         },
 
         /**
-        * Event listener for edit mode
-        * @memberOf widgets/details-panel/popup
-        **/
+         * Event listener for edit mode
+         * @memberOf widgets/details-panel/popup
+         */
         popupEditModeEnabled: function (isEditMode) {
             return isEditMode;
         },
 
         /**
-        * This function is used to get tiff images from hyperlinks
-        * @param{object} contains attachments information
-        * @memberOf widgets/details-panel/popup
-        */
+         * This function is used to get tiff images from hyperlinks
+         * @param{object} contains attachments information
+         * @memberOf widgets/details-panel/popup
+         */
         _checkForHyperlinks: function (infos) {
             var attributes, name;
             attributes = [];
@@ -461,10 +468,10 @@ define([
         },
 
         /**
-        * This function is use to get tiff images from media info
-        * @param{object} contains attachments information
-        * @memberOf widgets/details-panel/popup
-        */
+         * This function is use to get tiff images from media info
+         * @param{object} contains attachments information
+         * @memberOf widgets/details-panel/popup
+         */
         _checkTiffFormatImagesInPopupMedia: function (infos) {
             var mediaInfos;
             if (this.selectedOperationalLayer.infoTemplate && this.selectedOperationalLayer.infoTemplate.info && this.selectedOperationalLayer.infoTemplate.info.mediaInfos && this.selectedOperationalLayer.infoTemplate.info.mediaInfos.length > 0) {
@@ -481,10 +488,10 @@ define([
         },
 
         /**
-        * This function will return an object as document type of tiff image
-        * @param{string} contains url
-        * @memberOf widgets/details-panel/popup
-        */
+         * This function will return an object as document type of tiff image
+         * @param{string} contains url
+         * @memberOf widgets/details-panel/popup
+         */
         _getTiffImageObject: function (url) {
             var tiffImageObject = {};
             tiffImageObject.contentType = 'application/tiff';

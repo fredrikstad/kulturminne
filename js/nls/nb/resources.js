@@ -64,18 +64,9 @@ define({
     "cancelButtonTooltip": "Avbryt",
     "geoformBackButtonTooltip": "Gå tilbake til listen",
     "updateFeaturesConfirmationMsg": "${count} geoobjekter blir oppdatert",
-    "attachmentHeaderText": "Vedlegg"
-  },
-  "locator": {
-      "addressText": "Address:", // Shown as a title for a group of addresses returned on performing unified search
-      "usngText": "USNG", // Shown as a title for a group of USNG values returned on performing unified search
-      "mgrsText": "MGRS", // Shown as a title for a group of MGRS values returned on performing unified search
-      "latLongText": "Latitude/Longitude", // Shown as a title for a group of latitude longitude values returned on performing unified search
-      "invalidSearch": "No results found", // Shown in the address container when no results are returned on performing unified search
-      "locatorPlaceholder": "Enter an address to search", // Shown in the address container textbox as a placeholder
-      "locationOutOfExtent": "Located address is out of basemap extent", // Shown as an alert when the selected address in the search result is out of basemap extent
-      "searchButtonTooltip": "Search", // Tooltip for search button
-      "clearButtonTooltip": "Clear search value" // Tooltip for Geocoder clear button
+    "attachmentHeaderText": "Vedlegg",
+    "unknownPopupAttachment": "FIL",
+    "unableToEditPopupMessage": "å_You do not have permission to perform this action________________ø."
   },
   "mapViewer": {
     "zoomInToolTip": "Zoom inn",
@@ -110,27 +101,14 @@ define({
     "placeHolderText": "",
     "noCommentsAvailableText": "Ingen tilgjengelige poster",
     "remainingTextCount": "${0} tegn gjenstår",
-    "showNoText": "Nei", // Shown when inspections character limit is exceeded
-    "selectAttachments": "Vedlegg", // Appears above 'Select file' button indicating option to attach files while adding inspections
-    "selectFileText": "Browse", // Command button to open a dialog box to select file(s) to be attached
-    "attachmentSelectedMsg": "Vedlegg valgt", // Shown besides the select file button indicating the number of files attached
-    "attachmentHeaderText": "Vedlegg", //attachment header Text
-    "addRecordText": "Legg til post" // shown to add record in inspections tab under details panel
-  },
-  "inspection": {
-      "inspectionsFormSubmitButton": "Send inn", // Displayed on submit button to display inspections
-      "inspectionsFormCancelButton": "Avbryt", // Displayed on cancel button to cancel inspections
-      "errorInSubmittingInspection": "Kan ikke lagre redigeringer.", // Shown when user is unable to add inspections
-      "emptyInspectionMessage": "Verdi er obligatorisk", // Shown when user submits a inspection without any text/character
-      "placeHolderText": "", // Shown as a placeholder in inspections textbox
-      "noInspectionsAvailableText": "Ingen tilgjengelige poster", // Shown when no inspections are available for the selected issue
-      "remainingTextCount": "${0} tegn gjenstår", // Shown below the inspections textbox indicating the number of characters that can be added
-      "showNoText": "Nei", // Shown when inspections character limit is exceeded
-      "selectAttachments": "Vedlegg", // Appears above 'Select file' button indicating option to attach files while adding inspections
-      "selectFileText": "Browse", // Command button to open a dialog box to select file(s) to be attached
-      "attachmentSelectedMsg": "Vedlegg valgt", // Shown besides the select file button indicating the number of files attached
-      "attachmentHeaderText": "Vedlegg", //attachment header Text
-      "addRecordText": "Legg til post" // shown to add record in inspections tab under details panel
+    "showNoText": "Nei",
+    "selectAttachments": "Vedlegg",
+    "selectFileText": "Bla gjennom",
+    "attachmentSelectedMsg": "Vedlegg valgt",
+    "attachmentHeaderText": "Vedlegg",
+    "addRecordText": "Legg til post",
+    "unknownCommentAttachment": "FIL",
+    "unableToAddOrEditCommentMessage": "å_You do not have permission to perform this action________________ø."
   },
   "main": {
     "noGroup": "Ingen gruppe er konfigurert"
@@ -170,5 +148,33 @@ define({
       "selectionOptionsIconTooltip": "Utvalgsmuligheter", // Displayed on hover of selection options icon
       "showAllOptionText": "Vis Alle", // Displayed as a option in list of selection options
       "showSelectedOptionText": "Vis Valgt" // Displayed as a option in list of selection options
-  }
+  },
+  "locator": {
+      "addressText": "Address:", // Shown as a title for a group of addresses returned on performing unified search
+      "usngText": "USNG", // Shown as a title for a group of USNG values returned on performing unified search
+      "mgrsText": "MGRS", // Shown as a title for a group of MGRS values returned on performing unified search
+      "latLongText": "Latitude/Longitude", // Shown as a title for a group of latitude longitude values returned on performing unified search
+      "invalidSearch": "No results found", // Shown in the address container when no results are returned on performing unified search
+      "locatorPlaceholder": "Enter an address to search", // Shown in the address container textbox as a placeholder
+      "locationOutOfExtent": "Located address is out of basemap extent", // Shown as an alert when the selected address in the search result is out of basemap extent
+      "searchButtonTooltip": "Search", // Tooltip for search button
+      "clearButtonTooltip": "Clear search value" // Tooltip for Geocoder clear button
+  },
+  "inspection": {
+      "inspectionsFormSubmitButton": "Send inn",
+      "inspectionsFormCancelButton": "Avbryt",
+      "errorInSubmittingInspection": "Kan ikke lagre redigeringer.",
+      "emptyInspectionMessage": "Verdi er obligatorisk",
+      "placeHolderText": "",
+      "noInspectionsAvailableText": "Ingen tilgjengelige poster",
+      "remainingTextCount": "${0} tegn gjenstår",
+      "showNoText": "Nei",
+      "selectAttachments": "Vedlegg",
+      "selectFileText": "Bla gjennom",
+      "attachmentSelectedMsg": "Vedlegg valgt",
+      "attachmentHeaderText": "Vedlegg",
+      "addRecordText": "Legg til post",
+      "unknownCommentAttachment": "FIL",
+      "unableToAddOrEditCommentMessage": "å_You do not have permission to perform this action________________ø."
+  },
 });

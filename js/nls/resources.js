@@ -65,18 +65,8 @@ define({
             geoformBackButtonTooltip: "Return to the report list", //tooltip for Geoform back button
             updateFeaturesConfirmationMsg: "${count} features will be updated", //confirmation message to be displayed before updating the features
             attachmentHeaderText: "Attachments", //attachment header Text
-            unknownPopupAttachment: "FILE" // displayed for attached file having unknown extension
-        },
-        locator: {
-            addressText: "Address:", // Shown as a title for a group of addresses returned on performing unified search
-            usngText: "USNG", // Shown as a title for a group of USNG values returned on performing unified search
-            mgrsText: "MGRS", // Shown as a title for a group of MGRS values returned on performing unified search
-            latLongText: "Latitude/Longitude", // Shown as a title for a group of latitude longitude values returned on performing unified search
-            invalidSearch: "No results found", // Shown in the address container when no results are returned on performing unified search
-            locatorPlaceholder: "Enter an address to search", // Shown in the address container textbox as a placeholder
-            locationOutOfExtent: "Located address is out of basemap extent", // Shown as an alert when the selected address in the search result is out of basemap extent
-            searchButtonTooltip: "Search", // Tooltip for search button
-            clearButtonTooltip: "Clear search value" // Tooltip for Geocoder clear button
+            unknownPopupAttachment: "FILE", // displayed for attached file having unknown extension
+            unableToEditPopupMessage: "You do not have permission to perform this action." // to display message when unauthorized user tries to edit the popup info
         },
         mapViewer: {
             zoomInToolTip: "Zoom in", // Display tool-tip on command button to zoom in map
@@ -117,23 +107,8 @@ define({
             attachmentSelectedMsg: "attachment(s) selected", // Shown besides the select file button indicating the number of files attached
             attachmentHeaderText: "Attachments", //attachment header Text
             unknownCommentAttachment: "FILE", // displayed for attached file having unknown extension
-            addRecordText: "Add Record" // shown to add record in comments tab under details panel
-        },
-        inspection: {
-            inspectionsFormSubmitButton: "Save", // Displayed on submit button to display inspections
-            inspectionsFormCancelButton: "Cancel", // Displayed on cancel button to cancel inspections
-            errorInSubmittingInspection: "Edits could not be saved.", // Shown when user is unable to add inspections
-            emptyInspectionMessage: "Value required", // Shown when user submits a inspection without any text/character
-            placeHolderText: "", // Shown as a placeholder in inspections textbox
-            noInspectionsAvailableText: "No records available", // Shown when no inspections are available for the selected issue
-            remainingTextCount: "${0} character(s) remain", // Shown below the inspections textbox indicating the number of characters that can be added
-            showNoText: "No", // Shown when inspections character limit is exceeded
-            selectAttachments: "Attachments", // Appears above 'Select file' button indicating option to attach files while adding inspections
-            selectFileText: "Browse", // Command button to open a dialog box to select file(s) to be attached
-            attachmentSelectedMsg: "attachment(s) selected", // Shown besides the select file button indicating the number of files attached
-            attachmentHeaderText: "Attachments", //attachment header Text
-            unknownInspectionAttachment: "FILE", // displayed for attached file having unknown extension
-            addRecordText: "Add Record" // shown to add record in inspections tab under details panel
+            addRecordText: "Add Record", // shown to add record in comments tab under details panel
+            unableToAddOrEditCommentMessage: "You do not have permission to perform this action." // to display message when unauthorized user tries to add/edit the comment
         },
         main: {
             noGroup: "No group configured" // Appears when no group is configured
@@ -174,7 +149,35 @@ define({
             selectionOptionsIconTooltip: "Selection Options", // Displayed on hover of selection options icon
             showAllOptionText: "Show All", // Displayed as a option in list of selection options
             showSelectedOptionText: "Show Selected" // Displayed as a option in list of selection options
-        }
+        },
+        locator: {
+            addressText: "Address:", // Shown as a title for a group of addresses returned on performing unified search
+            usngText: "USNG", // Shown as a title for a group of USNG values returned on performing unified search
+            mgrsText: "MGRS", // Shown as a title for a group of MGRS values returned on performing unified search
+            latLongText: "Latitude/Longitude", // Shown as a title for a group of latitude longitude values returned on performing unified search
+            invalidSearch: "No results found", // Shown in the address container when no results are returned on performing unified search
+            locatorPlaceholder: "Enter an address to search", // Shown in the address container textbox as a placeholder
+            locationOutOfExtent: "Located address is out of basemap extent", // Shown as an alert when the selected address in the search result is out of basemap extent
+            searchButtonTooltip: "Search", // Tooltip for search button
+            clearButtonTooltip: "Clear search value" // Tooltip for Geocoder clear button
+        },
+        inspection: {
+            inspectionsFormSubmitButton: "Save", // Displayed on submit button to display inspections
+            inspectionsFormCancelButton: "Cancel", // Displayed on cancel button to cancel inspections
+            errorInSubmittingInspection: "Edits could not be saved.", // Shown when user is unable to add inspections
+            emptyInspectionMessage: "Value required", // Shown when user submits a inspection without any text/character
+            placeHolderText: "", // Shown as a placeholder in inspections textbox
+            noInspectionsAvailableText: "No records available", // Shown when no inspections are available for the selected issue
+            remainingTextCount: "${0} character(s) remain", // Shown below the inspections textbox indicating the number of characters that can be added
+            showNoText: "No", // Shown when inspections character limit is exceeded
+            selectAttachments: "Attachments", // Appears above 'Select file' button indicating option to attach files while adding inspections
+            selectFileText: "Browse", // Command button to open a dialog box to select file(s) to be attached
+            attachmentSelectedMsg: "attachment(s) selected", // Shown besides the select file button indicating the number of files attached
+            attachmentHeaderText: "Attachments", //attachment header Text
+            unknownInspectionAttachment: "FILE", // displayed for attached file having unknown extension
+            addRecordText: "Add Record", // shown to add record in inspections tab under details panel
+            unableToAddOrEditCommentMessage: "You do not have permission to perform this action." // to display message when unauthorized user tries to add/edit the comment
+        },
     }),
     "ar": 1,
     "bs": 1,
@@ -187,6 +190,7 @@ define({
     "fi": 1,
     "fr": 1,
     "he": 1,
+    "hi": 1,
     "hr": 1,
     "id": 1,
     "it": 1,

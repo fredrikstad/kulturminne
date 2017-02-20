@@ -499,9 +499,9 @@ define([
             on(deleteCommentBtnDiv, "click", lang.hitch(this, function () {
 
               if (confirm(this.appConfig.i18n.detailsPanel.verifyDelete)) {
-                graphic.attributes.SLETTET = 'Ja';
+                
                 this.appUtils.showLoadingIndicator();
-                this._commentsTable.applyEdits(null, [graphic], null, lang.hitch(this, function () { //ignore jslint
+                this._commentsTable.applyEdits(null, null, [graphic], lang.hitch(this, function () { //ignore jslint
                   domConstruct.empty(this.commentsContainer);
                   domStyle.set(this.commentsContainer, "display", "block");
                   this._showComments(this.multipleFeatures[0], this.commentsContainer);

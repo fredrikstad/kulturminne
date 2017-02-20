@@ -498,10 +498,11 @@ define([
             domConstruct.create("span", {"class": "glyphicon glyphicon-trash"}, deleteInspectionBtnDiv, "first");
             on(deleteInspectionBtnDiv, "click", lang.hitch(this, function () {
 
+              console.log(graphic.attributes.OBJECTID);
               if (confirm(this.appConfig.i18n.detailsPanel.verifyDelete)) {
-                graphic.attributes.SLETTET = 'Ja';
+
                 this.appUtils.showLoadingIndicator();
-                this._inspectionsTable.applyEdits(null, [graphic], null, lang.hitch(this, function () { //ignore jslint
+                this._inspectionsTable.applyEdits(null, null, [graphic], lang.hitch(this, function () { //ignore jslint
                   domConstruct.empty(this.inspectionsContainer);
                   domStyle.set(this.inspectionsContainer, "display", "block");
                   this._showInspections(this.multipleFeatures[0], this.inspectionsContainer);
@@ -632,9 +633,9 @@ define([
                 lang.hitch(this, function () {
                   if (this.appConfig.logInDetails.canEditFeatures) {
                     this.appUtils.showLoadingIndicator();
-                    this._openAddCommentsForm();
+                    this._openAddInspectionsForm();
                   } else {
-                    this.appUtils.showMessage(this.appConfig.i18n.comment.unableToAddOrEditCommentMessage);
+                    this.appUtils.showMessage(this.appConfig.i18n.inspection.unableToAddOrEditInspectionMessage);
                   }
                 }));
             }

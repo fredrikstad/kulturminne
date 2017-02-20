@@ -160,9 +160,9 @@ define([
             on(deleteFeatureBtnDiv, "click", lang.hitch(this, function () {
 
               if (confirm(this.appConfig.i18n.detailsPanel.verifyDelete)) {
-                graphic.attributes.SLETTET = 'Ja';
+
                 this.appUtils.showLoadingIndicator();
-                this.selectedOperationalLayer.applyEdits(null, [graphic], null, lang.hitch(this, function () { //ignore jslint
+                this.selectedOperationalLayer.applyEdits(null, null, [graphic], lang.hitch(this, function () { //ignore jslint
 
                   this.selectedOperationalLayer.refresh();
                   //Hide loading indicator

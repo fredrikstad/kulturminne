@@ -66,7 +66,7 @@ define({
     "updateFeaturesConfirmationMsg": "${count} geoobjekter blir oppdatert",
     "attachmentHeaderText": "Vedlegg",
     "unknownPopupAttachment": "FIL",
-    "unableToEditPopupMessage": "å_You do not have permission to perform this action________________ø."
+    "unableToEditPopupMessage": "Du har ikke tillatelse til å utføre denne handlingen."
   },
   "mapViewer": {
     "zoomInToolTip": "Zoom inn",
@@ -108,7 +108,7 @@ define({
     "attachmentHeaderText": "Vedlegg",
     "addRecordText": "Legg til post",
     "unknownCommentAttachment": "FIL",
-    "unableToAddOrEditCommentMessage": "å_You do not have permission to perform this action________________ø."
+    "unableToAddOrEditCommentMessage": "Du har ikke tillatelse til å utføre denne handlingen."
   },
   "main": {
     "noGroup": "Ingen gruppe er konfigurert"

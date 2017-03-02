@@ -28,7 +28,6 @@
         "commentsTabText": "Comments",
         "showHelpIcon": false,
         "commentFormAttachmentSectionLabel": "Attachments",
-        "headerBackgroundColor": "#f26e1f",
         "headerTextColor": "#fff",
         "bodyBackgroundColor": "#fff",
         "bodyTextColor": "#515151",
@@ -67,16 +66,11 @@
             "fieldName": "applicationFavicon",
             "placeHolder": "/images/favicon.ico"
         }, {
-            "label": "Application color",
-            "tooltip": "Application color scheme",
-            "type": "color",
-            "fieldName": "theme",
-            "sharedThemeProperty": "header.background"
-        }, {
-            "label": "Color of selected table rows",
-            "tooltip": "Choose the color for highlighting selected rows in the table",
-            "type": "color",
-            "fieldName": "highlightRow"
+            "label": "Greeting message",
+            "tooltip": "Provide a message to display when no features are currently selected.",
+            "type": "string",
+            "fieldName": "selectFeatureMessage",
+            "placeholder": "Choose a report from the table or map."
         }]
     }, {
         "category": "<b>Map</b>",
@@ -283,11 +277,11 @@
             "type": "paragraph",
             "value": "User can change the theme settings and choose different colors for header, body and button sections"
         }, {
-            "label": "Header background color",
-            "tooltip": "Set header background color",
+            "label": "Application color",
+            "tooltip": "Application color scheme",
             "type": "color",
-            "sharedThemeProperty": "header.background",
-            "fieldName": "headerBackgroundColor"
+            "fieldName": "theme",
+            "sharedThemeProperty": "header.background"
         }, {
             "label": "Header text color",
             "tooltip": "Set header text color",
@@ -318,6 +312,11 @@
             "type": "color",
             "sharedThemeProperty": "button.text",
             "fieldName": "buttonTextColor"
+        }, {
+            "label": "Color of selected table rows",
+            "tooltip": "Choose the color for highlighting selected rows in the table",
+            "type": "color",
+            "fieldName": "highlightRow"
         }]
     }]
 }

@@ -1602,6 +1602,7 @@ define([
                 this._detailsPanelWidget.destroyMediaWidget();
                 this._detailsPanelWidget.destroyCommentsWidget();
                 this._detailsPanelWidget.destroyInspectionsWidget();
+                this._detailsPanelWidget.destroyOmsetningWidget();
                 this._detailsPanelWidget.destroy();
             }
             if (dom.byId("detailsPanelWrapperContainer")) {

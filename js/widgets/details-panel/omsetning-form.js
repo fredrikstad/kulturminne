@@ -32,7 +32,7 @@ define([
     "esri/graphic",
     "dojo/dom-style",
     "dojo/dom-geometry",
-    "dojo/text!./templates/inspection-form.html"
+    "dojo/text!./templates/omsetning-form.html"
 ], function (
     declare,
     _WidgetBase,
@@ -50,10 +50,10 @@ define([
     Graphic,
     domStyle,
     domGeom,
-    inspectionForm
+    omsetningForm
 ) {
     return declare([_WidgetBase, _TemplatedMixin], {
-        templateString: inspectionForm,
+        templateString: omsetningForm,
         _sortedFields: [],
         i18n: {},
         _rangeHelpText: null,
@@ -69,13 +69,13 @@ define([
         * This function is called when widget is constructed.
         * @param{object} configData
         * @constructor
-        * @memberOf widgets/details-panel/inspection-form
+        * @memberOf widgets/details-panel/omsetning-form
         */
-        constructor: function (inspectionData) {
+        constructor: function (omsetningData) {
             this.inherited(arguments);
             // check if configData is present, then merge it with config object
-            if (inspectionData) {
-                lang.mixin(this, inspectionData);
+            if (omsetningData) {
+                lang.mixin(this, omsetningData);
             }
             this.i18n = this.config.i18n;
         },
@@ -83,17 +83,17 @@ define([
         /**
         * Widget post-create, called automatically in widget creation
         * life cycle, after constructor. Sets class variables.
-        * @memberOf widgets/details-panel/inspection-form
+        * @memberOf widgets/details-panel/omsetning-form
         */
         postCreate: function () {
             this.inherited(arguments);
-            this._initializeInspectionForm();
-            // click event for submit inspection form on submit button click
-            on(this.postInspectionButton, 'click', lang.hitch(this, function () {
+            this._initializeOmsetningForm();
+            // click event for submit omsetning form on submit button click
+            on(this.postOmsetningButton, 'click', lang.hitch(this, function () {
                 this.appUtils.showLoadingIndicator();
-                this._submitInspectionForm();
+                this._submitOmsetningForm();
             }));
-            on(this.cancelInspectionButton, 'click', lang.hitch(this, function (evt) {
+            on(this.cancelOmsetningButton, 'click', lang.hitch(this, function (evt) {
                 this.appUtils.showLoadingIndicator();
                 this.onCancelButtonClick(evt);
             }));
@@ -101,21 +101,21 @@ define([
 
         /**
         * This function is designed to handle processing after any DOM fragments have been actually added to the document.
-        * @memberOf widgets/details-panel/inspection-form
+        * @memberOf widgets/details-panel/omsetning-form
         */
         startup: function () {
             this.inherited(arguments);
         },
 
         /**
-        * This function is designed to handle creation of inspection form.
-        * @memberOf widgets/details-panel/inspection-form
+        * This function is designed to handle creation of omsetning form.
+        * @memberOf widgets/details-panel/omsetning-form
         */
-        _initializeInspectionForm: function () {
+        _initializeOmsetningForm: function () {
             this._filterLayerFields();
             // Sort fields array by type
             this._sortedTypeFormElement();
-            // create attachment button if inspection table has attachments
+            // create attachment button if omsetning table has attachments
             this._createAttachments();
             this.appUtils.hideLoadingIndicator();
         },
@@ -123,7 +123,7 @@ define([
         /**
         * Select fields from info pop up
         * @param{object} Map response
-        * @memberOf widgets/details-panel/inspection-form
+        * @memberOf widgets/details-panel/omsetning-form
         */
         _filterLayerFields: function () {
             var layerFields = [],
@@ -136,11 +136,11 @@ define([
                 //To maintain the order of the fields form pop up configuration first get all fields info in layerFields array
                 //then iterate through popupInfo and create fields to be shown in geo form.
                 // Create layerFields Key value pair according to fieldName
-                array.forEach(this.inspectionTable.fields, lang.hitch(this, function (layerField) {
+                array.forEach(this.omsetningTable.fields, lang.hitch(this, function (layerField) {
                     layerFields[layerField.name] = layerField;
                 }));
                 // Iterate through all the fields in popup info,Merge field info from layer details and popup details and create _sortedFields array.
-                array.forEach(this.inspectionPopupTable.popupInfo.fieldInfos, lang.hitch(this, function (popupField) {
+                array.forEach(this.omsetningPopupTable.popupInfo.fieldInfos, lang.hitch(this, function (popupField) {
                     // If 'ReportedBy' field is present in the layer, set _layerHasReportedByField flag
                     if (popupField.fieldName === this.config.reportedByField) {
                         this._layerHasReportedByField = true;
@@ -158,8 +158,8 @@ define([
                             layerField.format = popupField.format;
                         }
                         // if layer has type field set subTypes else set typeField as false
-                        if (layerField.name === this.inspectionTable.typeIdField) {
-                            layerField.subTypes = this.inspectionTable.types;
+                        if (layerField.name === this.omsetningTable.typeIdField) {
+                            layerField.subTypes = this.omsetningTable.types;
                             layerField.typeField = true;
                         } else {
                             layerField.typeField = false;
@@ -172,14 +172,14 @@ define([
 
         /**
         * Sort form elements by type
-        * @memberOf widgets/details-panel/inspection-form
+        * @memberOf widgets/details-panel/omsetning-form
         */
         _sortedTypeFormElement: function () {
             var hasDomainValue, hasDefaultValue;
             array.forEach(this._sortedFields, lang.hitch(this, function (currentField, index) {
                 // Set true/false value to property 'isTypeDependent' of the field.
                 currentField.isTypeDependent = false;
-                array.forEach(this.inspectionTable.types, function (currentType) {
+                array.forEach(this.omsetningTable.types, function (currentType) {
                     hasDomainValue = null;
                     hasDefaultValue = null;
                     hasDomainValue = currentType.domains[currentField.name];
@@ -203,9 +203,9 @@ define([
 
         /**
         * This function is called when click event occurs on submit buttons click
-        * @memberOf widgets/details-panel/inspection-form
+        * @memberOf widgets/details-panel/omsetning-form
         */
-        _submitInspectionForm: function () {
+        _submitOmsetningForm: function () {
             var featureData, editedFields = [], key, picker, datePicker, value, erroneousFields = [];
             erroneousFields = this._checkForFields();
             if (erroneousFields.length !== 0) {
@@ -218,7 +218,7 @@ define([
                 // create an empty array object
                 // featureData.attributes = {};
                 // for all the fields
-                array.forEach(query(".inspectionFormQuestionare .form-control", this.enterInspectionContainer), function (currentField) {
+                array.forEach(query(".omsetningFormQuestionare .form-control", this.enterOmsetningContainer), function (currentField) {
                     // get id of the field
                     key = domAttr.get(currentField, "id");
                     // check for date time picker and assign value
@@ -252,33 +252,33 @@ define([
                     editedFields.push(key);
                 }
 
-                this._primaryKeyField = this.selectedLayer.relationships[1].keyField;
-                this._foreignKeyField = this.inspectionTable.relationships[0].keyField;
+                this._primaryKeyField = this.selectedLayer.relationships[2].keyField;
+                this._foreignKeyField = this.omsetningTable.relationships[0].keyField;
                 if (this.item.attributes[this._primaryKeyField]) {
                     featureData.attributes[this._foreignKeyField] = this.item.attributes[this._primaryKeyField];
                 }
-                if (this.addInspections) {
-                    this._addNewInspections(featureData);
+                if (this.addOmsetning) {
+                    this._addNewOmsetning(featureData);
                 } else {
-                    this._updateInspections(featureData);
+                    this._updateOmsetning(featureData);
                 }
             }
         },
 
         /**
-        * This function is used to add new inspections
-        * @memberOf widgets/details-panel/inspection-form
+        * This function is used to add new omsetning
+        * @memberOf widgets/details-panel/omsetning-form
         */
-        _addNewInspections: function (featureData) {
+        _addNewOmsetning: function (featureData) {
             featureData.attributes = this._removeAttributeFromObject(featureData.attributes, this.selectedLayer.objectIdField);
-            // add the inspection to the inspection table
-            this.inspectionTable.applyEdits([featureData], null, null, lang.hitch(this, function (addResult, updateResult, deleteResult) { //ignore jslint
+            // add the omsetning to the omsetning table
+            this.omsetningTable.applyEdits([featureData], null, null, lang.hitch(this, function (addResult, updateResult, deleteResult) { //ignore jslint
                 var fileList, i, userFormNode;
-                // for new inspection we only need addResult parameter
+                // for new omsetning we only need addResult parameter
                 if (addResult && addResult.length > 0 && addResult[0].success) {
-                    userFormNode = dom.byId("addInspectionAttachmentsWrapperContainer");
+                    userFormNode = dom.byId("addOmsetningAttachmentsWrapperContainer");
                     // if layer has attachments then add those attachments
-                    if (this.inspectionTable.hasAttachments && query(".esriCTFileToSubmit", userFormNode).length > 0) {
+                    if (this.omsetningTable.hasAttachments && query(".esriCTFileToSubmit", userFormNode).length > 0) {
                         // get all the attachments
                         fileList = query(".esriCTFileToSubmit", userFormNode);
                         // reset fileAttached and failed counter
@@ -288,12 +288,12 @@ define([
                         this._totalFileAttachedCounter = fileList.length;
                         for (i = 0; i < fileList.length; i++) {
                             // handle success and error callback for add attachments
-                            this.inspectionTable.addAttachment(addResult[0].objectId, fileList[i],
+                            this.omsetningTable.addAttachment(addResult[0].objectId, fileList[i],
                                 lang.hitch(this, this._onAttachmentUploadComplete),
                                 lang.hitch(this, this._onAttachmentUploadFailed));
                         }
                     } else {
-                        this.onInspectionFormSubmitted(this.item);
+                        this.onOmsetningFormSubmitted(this.item);
                     }
                 } else {
                     // Hide loading indicator
@@ -312,20 +312,20 @@ define([
         },
 
         /**
-        * This function is used to update inspections
-        * @memberOf widgets/details-panel/inspection-form
+        * This function is used to update omsetning
+        * @memberOf widgets/details-panel/omsetning-form
         */
-        _updateInspections: function (featureData) {
+        _updateOmsetning: function (featureData) {
             //as we are updating feature we need object Id field inside for successful updation
             featureData.attributes[this.selectedLayer.objectIdField] = this.item.attributes[this.selectedLayer.objectIdField];
-            // Update the inspection to the inspection table
-            this.inspectionTable.applyEdits(null, [featureData], null, lang.hitch(this, function (addResult, updateResult, deleteResult) { //ignore jslint
+            // Update the omsetning to the omsetning table
+            this.omsetningTable.applyEdits(null, [featureData], null, lang.hitch(this, function (addResult, updateResult, deleteResult) { //ignore jslint
                 var fileList, i, userFormNode;
                 //for update we only need updateResult parameter
                 if (updateResult && updateResult.length > 0 && updateResult[0].success) {
-                    userFormNode = dom.byId("addInspectionAttachmentsWrapperContainer");
+                    userFormNode = dom.byId("addOmsetningAttachmentsWrapperContainer");
                     // if layer has attachments then add those attachments
-                    if (this.inspectionTable.hasAttachments && query(".esriCTFileToSubmit", userFormNode).length > 0) {
+                    if (this.omsetningTable.hasAttachments && query(".esriCTFileToSubmit", userFormNode).length > 0) {
                         // get all the attachments
                         fileList = query(".esriCTFileToSubmit", userFormNode);
                         // reset fileAttached and failed counter
@@ -335,12 +335,12 @@ define([
                         this._totalFileAttachedCounter = fileList.length;
                         for (i = 0; i < fileList.length; i++) {
                             // handle success and error callback for add attachments
-                            this.inspectionTable.addAttachment(updateResult[0].objectId, fileList[i],
+                            this.omsetningTable.addAttachment(updateResult[0].objectId, fileList[i],
                                 lang.hitch(this, this._onAttachmentUploadComplete),
                                 lang.hitch(this, this._onAttachmentUploadFailed));
                         }
                     } else {
-                        this.onInspectionFormSubmitted(this.item);
+                        this.onOmsetningFormSubmitted(this.item);
                     }
                 } else {
                     //Hide loading indicator
@@ -360,7 +360,7 @@ define([
 
         /**
         * Callback handler for attachment upload Complete event
-        * @memberOf widgets/details-panel/inspection-form
+        * @memberOf widgets/details-panel/omsetning-form
         */
         _onAttachmentUploadComplete: function () {
             this._fileAttachedCounter++;
@@ -369,7 +369,7 @@ define([
 
         /**
         * Callback handler for attachment upload failed event
-        * @memberOf widgets/details-panel/inspection-form
+        * @memberOf widgets/details-panel/omsetning-form
         */
         _onAttachmentUploadFailed: function () {
             this._fileFailedCounter++;
@@ -378,17 +378,17 @@ define([
 
         /**
         * On attachment upload
-        * @memberOf widgets/details-panel/inspection-form
+        * @memberOf widgets/details-panel/omsetning-form
         */
         _updateFileAttachedCounter: function () {
             if (this._totalFileAttachedCounter === (this._fileAttachedCounter + this._fileFailedCounter)) {
-                this.onInspectionFormSubmitted(this.item);
+                this.onOmsetningFormSubmitted(this.item);
             }
         },
 
         /**
         * This function is use to remove attribute from the object
-        * @memberOf widgets/details-panel/inspection-form
+        * @memberOf widgets/details-panel/omsetning-form
         */
         _removeAttributeFromObject: function (object, attribute) {
             delete object[attribute];
@@ -397,13 +397,13 @@ define([
 
         /**
         * This function is called when click event occurs on submit buttons click
-        * to check for errors, all the fields in inspection form
-        * @memberOf widgets/details-panel/inspection-form
+        * to check for errors, all the fields in omsetning form
+        * @memberOf widgets/details-panel/omsetning-form
         */
         _checkForFields: function () {
             var erroneousFields = [];
-            // for all the fields in inspection form
-            array.forEach(query(".inspectionFormQuestionare"), lang.hitch(this, function (currentField) {
+            // for all the fields in omsetning form
+            array.forEach(query(".omsetningFormQuestionare"), lang.hitch(this, function (currentField) {
                 // to check for errors in form before submitting.
                 if ((query(".form-control", currentField)[0])) {
                     // condition to check if the entered values are erroneous.
@@ -426,7 +426,7 @@ define([
         * Create error message container
         * @param{string} errorMessage, error massage which need to show on error
         * @param{object} errorMessageNode, node to bind error massage
-        * @memberOf widgets/details-panel/inspection-form
+        * @memberOf widgets/details-panel/omsetning-form
         */
         _showErrorMessageDiv: function (errorMessage, errorMessageNode) {
             var errorNode, place = "after";
@@ -441,7 +441,7 @@ define([
 
         /**
         * Display message on header of form
-        * @memberOf widgets/details-panel/inspection-form
+        * @memberOf widgets/details-panel/omsetning-form
         */
         _showHeaderMessageDiv: function () {
             on(this.headerMessageButton, "click", lang.hitch(this, function () {
@@ -457,7 +457,7 @@ define([
         /**
         * Remove the error message container.
         * @param{object} node, node to bind error massage
-        * @memberOf widgets/details-panel/inspection-form
+        * @memberOf widgets/details-panel/omsetning-form
         */
         _removeErrorNode: function (node) {
             if (domClass.contains(node, "errorMessage")) {
@@ -471,11 +471,11 @@ define([
         * @param{object} currentField, object of current field in the info pop
         * @param{int} index, index of current field in the array
         * @param{object} referenceNode, Parent Node for dependent field
-        * @memberOf widgets/details-panel/inspection-form
+        * @memberOf widgets/details-panel/omsetning-form
         */
         _createFormElement: function (currentField, index, referenceNode) {
             var fieldname, labelContent, fieldLabelText, formContent, requireField, userFormNode, fieldAttribute;
-            userFormNode = this.inspectionForm;
+            userFormNode = this.omsetningForm;
             //code to put asterisk mark for mandatory fields and also to give it a mandatory class.
             formContent = domConstruct.create("div", {}, userFormNode);
             // If dependent field has Reference Node
@@ -488,13 +488,13 @@ define([
             }
             // If fields are not null able set to mandatory fields
             if (!currentField.nullable || currentField.typeField) {
-                domClass.add(formContent, "form-group inspectionFormQuestionare mandatory");
+                domClass.add(formContent, "form-group omsetningFormQuestionare mandatory");
                 requireField = domConstruct.create("small", {
                     className: 'esriCTRequireFieldStyle',
                     innerHTML: this.config.i18n.geoform.requiredField
                 }, formContent);
             } else {
-                domClass.add(formContent, "form-group inspectionFormQuestionare");
+                domClass.add(formContent, "form-group omsetningFormQuestionare");
             }
             // If field has alias
             // else Set field name
@@ -517,12 +517,12 @@ define([
                 domConstruct.place(requireField, labelContent, "last");
             }
             // set default Values to the fields
-            if (this.inspectionTable.templates[0] && !currentField.defaultValue) {
-                for (fieldAttribute in this.inspectionTable.templates[0].prototype.attributes) {
-                    if (this.inspectionTable.templates[0].prototype.attributes.hasOwnProperty(fieldAttribute)) {
+            if (this.omsetningTable.templates[0] && !currentField.defaultValue) {
+                for (fieldAttribute in this.omsetningTable.templates[0].prototype.attributes) {
+                    if (this.omsetningTable.templates[0].prototype.attributes.hasOwnProperty(fieldAttribute)) {
                         if (fieldAttribute.toLowerCase() === fieldname.toLowerCase()) {
-                            if (this.inspectionTable.templates[0].prototype.attributes[fieldAttribute] !== null && lang.trim(this.inspectionTable.templates[0].prototype.attributes[fieldAttribute].toString()) !== "") {
-                                currentField.defaultValue = this.inspectionTable.templates[0].prototype.attributes[fieldAttribute];
+                            if (this.omsetningTable.templates[0].prototype.attributes[fieldAttribute] !== null && lang.trim(this.omsetningTable.templates[0].prototype.attributes[fieldAttribute].toString()) !== "") {
+                                currentField.defaultValue = this.omsetningTable.templates[0].prototype.attributes[fieldAttribute];
                             }
                         }
                     }
@@ -540,39 +540,39 @@ define([
         },
 
         /**
-        * Create attachment button while adding inspections
-        * @memberOf widgets/details-panel/inspection-form
+        * Create attachment button while adding omsetning
+        * @memberOf widgets/details-panel/omsetning-form
         */
         _createAttachments: function () {
-            var fileInput, formContent, fileChange, fileAttachmentContainer, fileContainer, inspectionFormAttachmentSectionLabel, userFormNode;
+            var fileInput, formContent, fileChange, fileAttachmentContainer, fileContainer, omsetningFormAttachmentSectionLabel, userFormNode;
             // If layer has hasAttachments true
-            if (this.inspectionTable.hasAttachments) {
-                userFormNode = dom.byId("addInspectionAttachmentsWrapperContainer");
+            if (this.omsetningTable.hasAttachments) {
+                userFormNode = dom.byId("addOmsetningAttachmentsWrapperContainer");
                 // Create container for hasAttachment
                 formContent = domConstruct.create("div", {
                     "class": "form-group hasAttachment esriCTGeoFormAttachmentLabel"
                 }, userFormNode);
-                if (this.config.inspectionFormAttachmentSectionLabel) {
-                    if (this.config.inspectionFormAttachmentSectionLabel === "Attachments") {
-                        inspectionFormAttachmentSectionLabel = this.config.i18n.inspection.selectAttachments;
+                if (this.config.omsetningFormAttachmentSectionLabel) {
+                    if (this.config.omsetningFormAttachmentSectionLabel === "Attachments") {
+                        omsetningFormAttachmentSectionLabel = this.config.i18n.comment.selectAttachments;
                     } else {
-                        inspectionFormAttachmentSectionLabel = this.config.inspectionFormAttachmentSectionLabel;
+                        omsetningFormAttachmentSectionLabel = this.config.commentFormAttachmentSectionLabel;
                     }
                 } else {
-                    inspectionFormAttachmentSectionLabel = this.config.i18n.inspection.selectAttachments;
+                    omsetningFormAttachmentSectionLabel = this.config.i18n.comment.selectAttachments;
                 }
                 // Select attachment label
                 domConstruct.create("label", {
-                    "innerHTML": inspectionFormAttachmentSectionLabel,
-                    "id": "inspectionFormAttachmentTitleLabel",
+                    "innerHTML": omsetningFormAttachmentSectionLabel,
+                    "id": "omsetningFormAttachmentTitleLabel",
                     "class": "esriCTGeoFormTitles"
                 }, formContent);
                 domConstruct.create("br", {}, formContent);
                 // Create div for Attachment button
-                fileContainer = domConstruct.create("div", { "class": "esriCTFileButtonContainer", "title": this.config.i18n.inspection.selectFileText }, formContent);
+                fileContainer = domConstruct.create("div", { "class": "esriCTFileButtonContainer", "title": this.config.i18n.comment.selectFileText }, formContent);
                 this._fileInputIcon = domConstruct.create("button", {
                     "type": "button",
-                    "innerHTML": this.config.i18n.inspection.selectFileText,
+                    "innerHTML": this.config.i18n.comment.selectFileText,
                     "class": "btn btn-default esriCTAddCommentAttachmentsButton esriCTEllipsis"
                 }, fileContainer);
                 // Show photo selected count
@@ -597,7 +597,7 @@ define([
                     },
                     "class": "esriCTPointerCursor"
                 }, domConstruct.create("form", {
-                    "id": "inspectionFormAttachment" + this._fileAttachmentCounter++,
+                    "id": "omsetningFormAttachment" + this._fileAttachmentCounter++,
                     "class": "esriCTHideFileInputUI"
                 }, fileContainer));
                 // domClass.add(fileInput, "esriCTPointerCursor");
@@ -610,9 +610,9 @@ define([
         },
 
         /**
-         * Show selected file on inspection form and create new fileControl so that multiple files can be selected.
+         * Show selected file on omsetning form and create new fileControl so that multiple files can be selected.
          * @param{object} evt - Event object which will be generated on file input change event.
-         * @memberOf widgets/details-panel/inspection-form
+         * @memberOf widgets/details-panel/omsetning-form
          */
         _onFileSelected: function (evt) {
             var newFormControl, fileInput, fileName, fileChange, alertHtml, target = evt.currentTarget || evt.srcElement;
@@ -641,7 +641,7 @@ define([
             this._updateAttachmentCount();
             //Check if file input container is present
             if ($(".hasAttachment")[0]) {
-                newFormControl = domConstruct.create("form", { "id": "inspectionFormAttachment" + this._fileAttachmentCounter++, "class": "esriCTHideFileInputUI" }, $(".hasAttachment")[0]);
+                newFormControl = domConstruct.create("form", { "id": "omsetningFormAttachment" + this._fileAttachmentCounter++, "class": "esriCTHideFileInputUI" }, $(".hasAttachment")[0]);
                 //create new file input control so that multiple files can be attached
                 fileInput = domConstruct.create("input", {
                     "type": "file",
@@ -660,15 +660,15 @@ define([
         },
 
         /**
-        * This function will update attachment count based on count will show/hide message in inspections form
-        * @memberOf widgets/details-panel/inspection-form
+        * This function will update attachment count based on count will show/hide message in omsetning form
+        * @memberOf widgets/details-panel/omsetning-form
         */
         _updateAttachmentCount: function () {
             var photoSelectedDiv = dom.byId("attachmentSelectedCount"), selectedAttachmentsCount;
             if (photoSelectedDiv) {
                 selectedAttachmentsCount = query(".alert-dismissable", this.fileAttachmentList).length;
                 if (selectedAttachmentsCount > 0) {
-                    domAttr.set(photoSelectedDiv, "innerHTML", selectedAttachmentsCount + " " + this.config.i18n.inspection.attachmentSelectedMsg);
+                    domAttr.set(photoSelectedDiv, "innerHTML", selectedAttachmentsCount + " " + this.config.i18n.comment.attachmentSelectedMsg);
                 } else {
                     domAttr.set(photoSelectedDiv, "innerHTML", "");
                 }
@@ -680,7 +680,7 @@ define([
         * @param{object} currentField, object of current field in the info pop
         * @param{object} formContent, Parent Node of the field inside geo form
         * @param{string} fieldname, name of the field
-        * @memberOf widgets/details-panel/inspection-form
+        * @memberOf widgets/details-panel/omsetning-form
         */
         _createRangeText: function (currentField, formContent, fieldname) {
             var options = {};
@@ -715,7 +715,7 @@ define([
         * @param{object} currentField, object of current field in the info pop
         * @param{object} formContent, Parent Node of the field inside geo form
         * @param{string} fieldname, name of the field
-        * @memberOf widgets/details-panel/inspection-form
+        * @memberOf widgets/details-panel/omsetning-form
         */
         _createDomainValueFormElements: function (currentField, formContent, fieldname) {
             var inputRangeDateGroupContainer, defaultValue, fieldValue;
@@ -759,7 +759,7 @@ define([
         * @param{object} currentField, object of current field in the info pop
         * @param{object} formContent, Parent Node of the field inside geo form
         * @param{string} fieldname, name of the field
-        * @memberOf widgets/details-panel/inspection-form
+        * @memberOf widgets/details-panel/omsetning-form
         */
         _createCodedValueFormElements: function (currentField, formContent, fieldname) {
             var selectOptions;
@@ -810,7 +810,7 @@ define([
         /**
         * Take appropriate actions on selection of a subtype
         * @param{object} currentField, object of current field in the info pop
-        * @memberOf widgets/details-panel/inspection-form
+        * @memberOf widgets/details-panel/omsetning-form
         */
         _codedValueOnChange: function (currentField) {
             // event on change
@@ -838,7 +838,7 @@ define([
         * Validate fields defined within subtypes
         * @param{object} currentTarget, on change event current target field
         * @param{object} currentField, object of current field in the info pop
-        * @memberOf widgets/details-panel/inspection-form
+        * @memberOf widgets/details-panel/omsetning-form
         */
         _validateTypeFields: function (evt, currentField) {
             var selectedType, defaultValue, referenceNode, currentTarget = evt.currentTarget || evt.srcElement;
@@ -863,7 +863,7 @@ define([
                 });
 
                 // initial point of reference to put elements
-                referenceNode = dom.byId(this.inspectionTable.typeIdField).parentNode;
+                referenceNode = dom.byId(this.omsetningTable.typeIdField).parentNode;
                 // code to populate type dependent fields
                 array.forEach(this._sortedFields, lang.hitch(this, function (currentInput, index) {
                     var field = null, hasDomainValue, hasDefaultValue, fieldAttribute;
@@ -877,7 +877,7 @@ define([
                         return true;
                     }
                     // mixin array of sorted field and info pop field
-                    array.some(this.inspectionTable.fields, function (layerField) {
+                    array.some(this.omsetningTable.fields, function (layerField) {
                         if (layerField.name === currentInput.name) {
                             field = lang.clone(lang.mixin(layerField, currentInput));
                             return true;
@@ -909,7 +909,7 @@ define([
         * @param{array} field, an array of field details
         * @param{object} referenceNode, parent node for dependent field
         * @param{int} index , field index
-        * @memberOf widgets/details-panel/inspection-form
+        * @memberOf widgets/details-panel/omsetning-form
         */
         _validateTypeFieldsValue: function (selectedType, field, referenceNode, index) {
             var switchDomainType, i;
@@ -957,7 +957,7 @@ define([
         /**
         * Reset subtype fields
         * @param{object} currentInput, parent node to destroy dependent field
-        * @memberOf widgets/details-panel/inspection-form
+        * @memberOf widgets/details-panel/omsetning-form
         */
         _resetSubTypeFields: function (currentInput) {
             if (currentInput.type === "esriFieldTypeDate" || ((currentInput.type === "esriFieldTypeSmallFloat" || currentInput.type === "esriFieldTypeSmallInteger" || currentInput.type === "esriFieldTypeDouble" || currentInput.type === "esriFieldTypeInteger") && (currentInput.domain && currentInput.domain.type && currentInput.domain.type === "range"))) {
@@ -976,7 +976,7 @@ define([
         * @param{object} currentField, object of current field in the info pop
         * @param{object} formContent, Parent Node of the field inside geo form
         * @param{string} fieldname, name of the field
-        * @memberOf widgets/details-panel/inspection-form
+        * @memberOf widgets/details-panel/omsetning-form
         */
         _setRangeForm: function (currentField, formContent, fieldname) {
             var setStep, stepDivisibility = 'none',
@@ -1035,7 +1035,7 @@ define([
         * Event to address validations for manual entry in the touch-spinner input
         * @param{object} inputcontentSpinner, container of TouchSpin
         * @param{object} currentField, object of current field in the info pop
-        * @memberOf widgets/details-panel/inspection-form
+        * @memberOf widgets/details-panel/omsetning-form
         */
         _inputTouchspinOnKeyup: function (inputcontentSpinner, currentField) {
             // Touch Spinner on keyup event
@@ -1065,7 +1065,7 @@ define([
         * @param{object} currentField, object of current field in the info pop
         * @param{object} formContent, Parent Node of the field inside geo form
         * @param{string} fieldname, name of the field
-        * @memberOf widgets/details-panel/inspection-form
+        * @memberOf widgets/details-panel/omsetning-form
         */
         _createInputFormElements: function (currentField, formContent, fieldname) {
             var inputDateGroupContainer;
@@ -1137,7 +1137,7 @@ define([
 
         /**
         * Clear header message
-        * @memberOf widgets/details-panel/inspection-form
+        * @memberOf widgets/details-panel/omsetning-form
         */
         clearHeaderMessage: function () {
             //Hide error message div, if it is visible
@@ -1150,7 +1150,7 @@ define([
         * Add default values to the fields
         * @param{object} currentField, object of current field in the info pop
         * @param{object} formContent, Parent Node of the field inside geo form
-        * @memberOf widgets/details-panel/inspection-form
+        * @memberOf widgets/details-panel/omsetning-form
         */
         _addInputElementsValue: function (currentField, formContent) {
             var fieldValue, defaultValue;
@@ -1188,7 +1188,7 @@ define([
         * @param{object} currentNode, apply validation on current node
         * @param{object} currentField, object of current field in the info pop
         * @param{Boolean} iskeyPress, set Boolean value true or false
-        * @memberOf widgets/details-panel/inspection-form
+        * @memberOf widgets/details-panel/omsetning-form
         */
         _validateField: function (currentNode, currentField, iskeyPress) {
             var inputType, inputValue, node, typeCastedInputValue, error, targetNode = currentNode.target || currentNode.currentTarget || currentNode.srcElement,
@@ -1276,7 +1276,7 @@ define([
         * Format input values
         * @param{object} currentField, current targeted field
         * @param{int} typeCastedInputValue , input integer value of field
-        * @memberOf widgets/details-panel/inspection-form
+        * @memberOf widgets/details-panel/omsetning-form
         */
         _setFormatToValue: function (currentField, typeCastedInputValue, node) {
             var toFixedValue;
@@ -1294,7 +1294,7 @@ define([
         * @param{object} node, parent node to add and remove classes based on validation
         * @param{string} inputValue , input value
         * @param{string} iskeyPress, check for flag
-        * @memberOf widgets/details-panel/inspection-form
+        * @memberOf widgets/details-panel/omsetning-form
         */
         _validateUserInput: function (error, node, inputValue, iskeyPress) {
             if (query(".errorMessage", node)[0]) {
@@ -1320,7 +1320,7 @@ define([
         * Add calendar notation icon
         * @param{object} formContent, Parent Node to attached field
         * @param{string} imageIconClass,default class of image icon calendar
-        * @memberOf widgets/details-panel/inspection-form
+        * @memberOf widgets/details-panel/omsetning-form
         */
         _addNotationIcon: function (formContent, imageIconClass) {
             var inputIconGroupContainer, inputIconGroupAddOn;
@@ -1344,7 +1344,7 @@ define([
         * @param{Boolean} isRangeField, set flag true or false depends on range
         * @param{string} fieldname, name of the field
         * @param{object} currentField, object of Current Field Details
-        * @memberOf widgets/details-panel/inspection-form
+        * @memberOf widgets/details-panel/omsetning-form
         */
         _createDateField: function (parentNode, isRangeField, fieldname, currentField) {
             var dateInputField, picker, selectedDate, minValue, maxValue, value, dateFormat;
@@ -1394,30 +1394,30 @@ define([
                 if (selectedDate === null) {
                     query("input", this)[0].value = "";
                 }
-                if (query(".errorMessage", query(evt.target).parents(".inspectionFormQuestionare")[0])[0]) {
-                    domConstruct.destroy(query(".errorMessage", query(evt.target).parents(".inspectionFormQuestionare")[0])[0]);
+                if (query(".errorMessage", query(evt.target).parents(".omsetningFormQuestionare")[0])[0]) {
+                    domConstruct.destroy(query(".errorMessage", query(evt.target).parents(".omsetningFormQuestionare")[0])[0]);
                 }
-                domClass.remove(query(evt.target).parents(".inspectionFormQuestionare")[0], "has-error");
-                domClass.add(query(evt.target).parents(".inspectionFormQuestionare")[0], "has-success");
+                domClass.remove(query(evt.target).parents(".omsetningFormQuestionare")[0], "has-error");
+                domClass.add(query(evt.target).parents(".omsetningFormQuestionare")[0], "has-success");
                 if (query("input", this)[0].value === "") {
-                    domClass.remove(query(evt.target).parents(".inspectionFormQuestionare")[0], "has-success");
-                    domClass.remove(query(evt.target).parents(".inspectionFormQuestionare")[0], "has-error");
+                    domClass.remove(query(evt.target).parents(".omsetningFormQuestionare")[0], "has-success");
+                    domClass.remove(query(evt.target).parents(".omsetningFormQuestionare")[0], "has-error");
                 }
             }).on('dp.error', function (evt) {
                 // on error
                 evt.target.value = '';
-                domClass.remove(query(evt.target).parents(".inspectionFormQuestionare")[0], "has-success");
-                domClass.add(query(evt.target).parents(".inspectionFormQuestionare")[0], "has-error");
+                domClass.remove(query(evt.target).parents(".omsetningFormQuestionare")[0], "has-success");
+                domClass.add(query(evt.target).parents(".omsetningFormQuestionare")[0], "has-error");
             }).on("dp.hide", function (evt) {
                 // on Datetime picker hide event
                 if (query("input", this)[0].value === "") {
-                    domClass.remove(query(evt.target).parents(".inspectionFormQuestionare")[0], "has-success");
-                    domClass.remove(query(evt.target).parents(".inspectionFormQuestionare")[0], "has-error");
+                    domClass.remove(query(evt.target).parents(".omsetningFormQuestionare")[0], "has-success");
+                    domClass.remove(query(evt.target).parents(".omsetningFormQuestionare")[0], "has-error");
                 }
             }).on('dp.change', function (evt) {
                 // on change
-                domClass.add(query(evt.target).parents(".inspectionFormQuestionare")[0], "has-success");
-                domClass.remove(query(evt.target).parents(".inspectionFormQuestionare")[0], "has-error");
+                domClass.add(query(evt.target).parents(".omsetningFormQuestionare")[0], "has-success");
+                domClass.remove(query(evt.target).parents(".omsetningFormQuestionare")[0], "has-error");
             });
             // if isRangeField is set to true for range Domain value then assign maximum and minimum value to the date time picker
             if (isRangeField) {
@@ -1434,17 +1434,17 @@ define([
         },
 
         /**
-        * Callback after inspection form is submitted
+        * Callback after omsetning form is submitted
         * @param{item} selected item
-        * @memberOf widgets/details-panel/inspection-form
+        * @memberOf widgets/details-panel/omsetning-form
         */
-        onInspectionFormSubmitted: function (item) {
+        onOmsetningFormSubmitted: function (item) {
             return item;
         },
 
         /**
-        * Callback after clicking cancel button of inspection form
-        * @memberOf widgets/details-panel/inspection-form
+        * Callback after clicking cancel button of omsetning form
+        * @memberOf widgets/details-panel/omsetning-form
         */
         onCancelButtonClick: function (evt) {
             return evt;

@@ -24,7 +24,7 @@ define({
     "group": "d5dadd3773b24944aede6b27bad4f0a5",
     // Enter the url to the proxy if needed by the application. See the 'Using the proxy page' help topic for details
     // http://developers.arcgis.com/en/javascript/jshelp/ags_proxy.html
-    "proxyurl": "http://kart.fredrikstad.kommune.no/proxy/proxy.ashx",
+    //"proxyurl": "http://kart.fredrikstad.kommune.no/proxy/proxy.ashx",
     // Example of a template specific property. If your template had several color schemes
     // you could define the default here and setup configuration settings to allow users to choose a different
     // color theme.
@@ -91,10 +91,14 @@ define({
     "commentField": "PRIKKER",
     // to set field of inspection to fetch data from it
     "inspectionField": "AVVIK",
+    // to set field of omsetning to fetch data from it
+    "omsetningField": "ÅR",
     // to display comment table popup info
     "usePopupConfigurationForComment": true,
     // to display inspection table popup info
     "usePopupConfigurationForInspection": true,
+    // to set the color of feature that is highlighted by selecting a particular row
+    "usePopupConfigurationForOmsetning": true,
     // to set the color of feature that is highlighted by selecting a particular row
     "highlightRow": "#C8C8C8",
     // to show non editable layers on selected web map
@@ -115,6 +119,8 @@ define({
     "commentsTabText": "Prikker",
     // to set the text of inspection tab
     "inspectionsTabText": "Kontroll",
+    // to set the text of omsetning tab
+    "omsetningTabText": "Omsetning",
     // to show/hide help icon
     "showHelpIcon": false,
     // to show as a label for attachment section in popup form where attachments can be added

@@ -792,7 +792,7 @@ table {
     font-size: 15px;
 }
 
-.esriCTEditFeatureButton, .esriCTCommentButton, .esriCTInspectionButton {
+.esriCTEditFeatureButton, .esriCTCommentButton, .esriCTInspectionButton, .esriCTOmsetningButton {
     height: 22px;
     width: 22px;
     font-size: 22px;
@@ -801,7 +801,7 @@ table {
     right: 10px;
     top: 4px;
 }
-.esriCTDeleteFeatureButton, .esriCTDeleteCommentButton, .esriCTDeleteInspectionButton {
+.esriCTDeleteFeatureButton, .esriCTDeleteCommentButton, .esriCTDeleteInspectionButton, .esriCTDeleteOmsetningButton {
     position: absolute;
     right: 60px;
     top: 2px;
@@ -1941,13 +1941,7 @@ input.esriCTRadioButton {
     word-wrap: break-word;
 }
 
-.esriCTCommentsPopup {
-    border-bottom: none;
-    position: relative;
-    padding: 8px 10px !important;
-}
-
-.esriCTInspectionsPopup {
+.esriCTCommentsPopup, .esriCTInspectionsPopup, .esriCTOmsetningPopup {
     border-bottom: none;
     position: relative;
     padding: 8px 10px !important;
@@ -1963,6 +1957,10 @@ input.esriCTRadioButton {
 }
 
 .esriCTInspectionsContainer .mediaSection, .esriCTInspectionsContainer .attachmentsSection {
+    display: none;
+}
+
+.esriCTOmsetningContainer .mediaSection, .esriCTOmsetningContainer .attachmentsSection {
     display: none;
 }
 
@@ -2196,21 +2194,21 @@ input.esriCTRadioButton {
 
 /** Attachment section styles for popup and comments **/
 
-.esriCTPopupInfoContainer .esriCTThumbnailContainer, .esriCTCommentsContainer .esriCTThumbnailContainer, .esriCTInspectionsContainer .esriCTThumbnailContainer {
+.esriCTPopupInfoContainer .esriCTThumbnailContainer, .esriCTCommentsContainer .esriCTThumbnailContainer, .esriCTInspectionsContainer .esriCTThumbnailContainer, .esriCTOmsetningContainer .esriCTThumbnailContainer {
     margin: 2px;
 }
 
-.esriCTPopupInfoContainer .esriCTAttachmentHeader, .esriCTCommentsContainer .esriCTAttachmentHeader, .esriCTInspectionsContainer .esriCTAttachmentHeader {
+.esriCTPopupInfoContainer .esriCTAttachmentHeader, .esriCTCommentsContainer .esriCTAttachmentHeader, .esriCTInspectionsContainer .esriCTAttachmentHeader, .esriCTOmsetningContainer .esriCTAttachmentHeader  {
     margin: 2px;
     word-wrap: break-word;
     border-bottom: 1px solid;
 }
 
-.esriCTCommentsContainer .esriCTAttachmentHeader, .esriCTInspectionsContainer .esriCTAttachmentHeader  {
+.esriCTCommentsContainer .esriCTAttachmentHeader, .esriCTInspectionsContainer .esriCTAttachmentHeader, .esriCTOmsetningContainer .esriCTAttachmentHeader  {
     border: none;
 }
 
-.esriCTPopupInfoContainer .esriCTAttachmentImg, .esriCTCommentsContainer .esriCTAttachmentImg, .esriCTInspectionsContainer .esriCTAttachmentImg {
+.esriCTPopupInfoContainer .esriCTAttachmentImg, .esriCTCommentsContainer .esriCTAttachmentImg, .esriCTInspectionsContainer .esriCTAttachmentImg, .esriCTOmsetningContainer .esriCTAttachmentImg {
     cursor: pointer;
     height: 60px !important;
     width: 83px !important;

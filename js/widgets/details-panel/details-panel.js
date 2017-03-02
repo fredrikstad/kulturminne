@@ -26,6 +26,7 @@ define([
     "dojo/_base/lang",
     "widgets/details-panel/prikk",
     "widgets/details-panel/inspections",
+    "widgets/details-panel/omsetning",
     "widgets/details-panel/media",
     "widgets/details-panel/popup",
     "dojo/dom-construct",
@@ -43,6 +44,7 @@ define([
     lang,
     Comments,
     Inspections,
+    Omsetning,
     Media,
     PopupTab,
     domConstruct,
@@ -57,6 +59,7 @@ define([
         _mediaWidgetObj: null, // to store object of media widget
         _commentsWidgetObj: null, // to store object of comments widget
         _inspectionsWidgetObj: null, // to store object of inspections widget
+        _omsetningWidgetObj: null, // to store object of omsetning widget
 
         i18n: {}, // to store nls object
         isShowSelectedClicked: null, // to notify that show all option is clicked
@@ -94,10 +97,11 @@ define([
             //this._initializeMediaWidget();
             this._initializeCommentsWidget();
             this._initializeInspectionsWidget();
+            this._initializeOmsetningWidget();
         },
 
         /**
-        * This function is used to attach click event to popup, media, comments, & inspections tab
+        * This function is used to attach click event to popup, media, comments, inspections, & omsetning tab
         * @memberOf widgets/details-panel/details-panel
         */
         _attachTabEvents: function () {
@@ -117,6 +121,11 @@ define([
                 dom.byId("tabContent").scrollTop = 0;
             }));
             on(dom.byId("inspectionsTab"), "click", lang.hitch(this, function () {
+                this.hideWebMapList();
+                //Scroll to top position
+                dom.byId("tabContent").scrollTop = 0;
+            }));
+            on(dom.byId("omsetningTab"), "click", lang.hitch(this, function () {
                 this.hideWebMapList();
                 //Scroll to top position
                 dom.byId("tabContent").scrollTop = 0;
@@ -321,6 +330,52 @@ define([
         },
 
         /**
+        * This function is used to initialize omsetning tab
+        * @memberOf widgets/details-panel/details-panel
+        */
+        _initializeOmsetningWidget: function () {
+            var omsetningParameters;
+            //if no record is selected from table then hide all tabs
+
+            if (this.multipleFeatures.length === 1) {
+                // Initialize inpections widget
+                omsetningParameters = {
+                    "appConfig": this.appConfig,
+                    "selectedFeatureSet": this.selectedFeatureSet,
+                    "selectedOperationalLayer": this.selectedOperationalLayer,
+                    "map": this.map,
+                    "appUtils": this.appUtils,
+                    "itemInfo": this.itemInfo,
+                    "multipleFeatures": this.multipleFeatures
+                };
+                this._omsetningWidgetObj = new Omsetning(omsetningParameters, domConstruct.create("div", {}, dom.byId("omsetningWrapperContainer")));
+                this._attachOmsetningEventListener();
+                this._omsetningWidgetObj.startup();
+            } else {
+                this._hideDetailsPanelTab("omsetning");
+            }
+            if (dom.byId("omsetningformContainer") && !domClass.contains(dom.byId("omsetningformContainer"), "esriCTHidden")) {
+                domClass.add(dom.byId("omsetningformContainer"), "esriCTHidden");
+            }
+        },
+
+        /**
+        * This function is used to attach event listener to omsetning widget
+        * @memberOf widgets/details-panel/details-panel
+        */
+        _attachOmsetningEventListener: function () {
+            this._omsetningWidgetObj.hideOmsetningTab = lang.hitch(this, function () {
+                this._hideDetailsPanelTab("omsetning");
+            });
+
+            this._omsetningWidgetObj.showOmsetningTab = lang.hitch(this, function () {
+                this._showDetailsPanelTab("omsetning");
+                this._displayTabList();
+            });
+        },
+
+
+        /**
          * This function is used to destroy popup widget.
          * @memberOf widgets/details-panel/details-panel
          */
@@ -357,6 +412,16 @@ define([
         destroyInspectionsWidget: function () {
             if (this._inspectionsWidgetObj) {
                 this._inspectionsWidgetObj.destroy();
+            }
+        },
+
+        /**
+        * This function is used to destroy omsetning widget.
+        * @memberOf widgets/details-panel/details-panel
+        */
+        destroyOmsetningWidget: function () {
+            if (this._omsetningWidgetObj) {
+                this._omsetningWidgetObj.destroy();
             }
         },
 

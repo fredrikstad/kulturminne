@@ -1,0 +1,22 @@
+﻿<div class="esriCTCommentsForm1" data-dojo-attach-point="omsetningForm">
+    <div data-dojo-attach-point="enterOmsetningContainer" class="esriCTEnterComment">
+        <div data-dojo-attach-point="headerMessageDiv" class="esriCTHidden">
+            <div data-dojo-attach-point="headerMessageType" class="alert alert-danger">
+                <span class="close" data-dojo-attach-point="headerMessageButton">&times;</span>
+                <span data-dojo-attach-point="headerMessageContent">${i18n.comment.errorInSubmittingComment}</span>
+            </div>
+        </div>
+        <form role="form" data-dojo-attach-point="omsetningForm">
+        </form>
+    </div>
+    <div data-dojo-attach-point="attachmentRootNode" class="esriCTAddGeoFormAttachmentsWrapperContainer" id="addOmsetningAttachmentsWrapperContainer">
+    </div>
+    <div class="esriCTFullWidth esriCTCommentButtons">
+        <div data-dojo-attach-point="postOmsetningButton" class="btn btn-default esriCTEllipsis esriCTPostCommentButton">
+            ${i18n.comment.commentsFormSubmitButton}
+        </div>
+        <div data-dojo-attach-point="cancelOmsetningButton" class="btn btn-default esriCTEllipsis esriCTCancelCommentButton esriCTApplicationColor">
+            ${i18n.comment.commentsFormCancelButton}
+        </div>
+    </div>
+</div>

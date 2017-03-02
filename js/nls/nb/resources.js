@@ -175,6 +175,6 @@ define({
       "attachmentHeaderText": "Vedlegg",
       "addRecordText": "Legg til post",
       "unknownInspectionAttachment": "FIL",
-      "unableToAddOrEditInspectionMessage": "å_You do not have permission to perform this action________________ø."
+      "unableToAddOrEditInspectionMessage": "Du har ikke tillatelse til å utføre denne handlingen."
   },
 });

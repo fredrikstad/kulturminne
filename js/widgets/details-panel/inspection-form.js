@@ -253,7 +253,10 @@ define([
                 }
 
                 this._primaryKeyField = this.selectedLayer.relationships[1].keyField;
-                this._foreignKeyField = this.inspectionTable.relationships[0].keyField;
+                var selectedLayerName = this.selectedLayer.name
+                var relatedTable = array.filter(this.inspectionTable.relationships, function(item){return item.name === selectedLayerName;});
+                //this._foreignKeyField = this.inspectionTable.relationships[0].keyField;
+                this._foreignKeyField = relatedTable[0].keyField;
                 if (this.item.attributes[this._primaryKeyField]) {
                     featureData.attributes[this._foreignKeyField] = this.item.attributes[this._primaryKeyField];
                 }

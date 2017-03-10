@@ -582,8 +582,8 @@ define([
          * @memberOf widgets/main/main
          */
         _resetUpperAndLowerContainer: function () {
-            $("#upperContainer").height('54%');
-            $("#lowerContainer").height('45%');
+            $("#upperContainer").height('45%');
+            $("#lowerContainer").height('54%');
             //Resize the map after setting default height to lower and upper container
             this._resizeMap();
         },

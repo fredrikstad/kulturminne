@@ -745,7 +745,7 @@ table {
 /** Details panel container starts **/
 
 .esriCTDetailsPanelWrapperContainer {
-    width: 50%;
+    width: 60%;
     height: 100%;
     border-right: 1px solid #cccccc;
     float: left;
@@ -830,7 +830,7 @@ table {
 }
 
 .esriCTMapPanelWrapperContainer {
-    width: 50%;
+    width: 40%;
     height: 100%;
     float: right;
 }
@@ -1981,7 +1981,7 @@ input.esriCTRadioButton {
 }
 
 .esriCTCommentsTotalCount {
-    display: inline-block;
+    display: none;
     vertical-align: middle;
 }
 

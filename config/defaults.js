@@ -21,14 +21,14 @@ define({
     "appid": "",
     "oauthappid": null,
     // Group templates must support a group url parameter. This will contain the id of the group.
-    "group": "d5dadd3773b24944aede6b27bad4f0a5",
+    "group": "e8789d121074440d899efc2209075d6d",
     // Enter the url to the proxy if needed by the application. See the 'Using the proxy page' help topic for details
     // http://developers.arcgis.com/en/javascript/jshelp/ags_proxy.html
     //"proxyurl": "http://kart.fredrikstad.kommune.no/proxy/proxy.ashx",
     // Example of a template specific property. If your template had several color schemes
     // you could define the default here and setup configuration settings to allow users to choose a different
     // color theme.
-    "theme": "#005ce6",
+    "theme": "#f26e1f",
     "bingKey": "", //Enter the url to your organizations bing maps key if you want to use bing basemaps
     // Defaults to arcgis.com. Set this value to your portal or organization host name.
     "sharinghost": location.protocol + "//" + "arcgis.com",
@@ -54,7 +54,7 @@ define({
         }]
     },
     // name of the application
-    "applicationName": "Bevillinger i Fredrikstad",
+    "applicationName": "Kulturminner i Fredrikstad",
     // application icon
     "applicationIcon": "http://kart.fredrikstad.kommune.no/skjenkebevillinger/images/logo.png",
     // application favicon icon
@@ -88,11 +88,11 @@ define({
     // to set rating field whether it needs to be displayed or not in web-map description area
     "webMapInfoAvgRating": false,
     // to set field of comment to fetch data from it
-    "commentField": "PRIKKER",
+    "commentField": "Alder",
     // to set field of inspection to fetch data from it
-    "inspectionField": "AVVIK",
+    "inspectionField": "Alder",
     // to set field of omsetning to fetch data from it
-    "omsetningField": "ÅR",
+    "omsetningField": "Alder",
     // to display comment table popup info
     "usePopupConfigurationForComment": true,
     // to display inspection table popup info
@@ -112,15 +112,15 @@ define({
     // to set content for help dialog
     "helpDialogContent": "<p>Welcome to Crowdsource Manager! <\/p> <p>Use this application to review and update reports. To get started, choose a category and then choose a report from the table or map.<\/p> <p>The details of that report will load in the panel in the lower left corner of the screen. From this panel, you can also review images, charts, and other information associated with the selected report. Update the report details by clicking the pencil icon, or hold down the CTRL key while clicking multiple reports to open the batch editor.<\/p> <p>View the location of the report using the map in the lower right corner of the application.<\/p><p>Reports can be filtered by time or field values. If time filtering is enabled for your reports, a time slider will appear below the table. Drag the time slider handle(s) to show only reports from a specific time span in the map and table. If filtering based on field values is enabled for your reports, a filter icon will appear in the table header next to the name of the fields that can be used to filter the reports. Click the icon and specify which reports you'd like to see in the table and map.<\/p>",
     // to set the text of popup tab
-    "popupTabText": "Bevilling",
+    "popupTabText": "Byggningsinformasjon",
     // to set the text of media tab
     "mediaTabText": "Media",
     // to set the text of comment tab
-    "commentsTabText": "Prikker",
+    "commentsTabText": "Historie",
     // to set the text of inspection tab
-    "inspectionsTabText": "Kontroll",
+    "inspectionsTabText": "Teknikk",
     // to set the text of omsetning tab
-    "omsetningTabText": "Omsetning",
+    "omsetningTabText": "Verneverdi",
     // to show/hide help icon
     "showHelpIcon": false,
     // to show as a label for attachment section in popup form where attachments can be added

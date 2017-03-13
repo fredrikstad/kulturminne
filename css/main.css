@@ -320,12 +320,12 @@ table {
 
 .esriCTReportIconContainer {
     float: right;
-    background-image: url('../js/widgets/report/images/icon.png');
+    font-size: 16px;
 }
 
 .esriCTReportIconContainerDisabled {
     float: right;
-    background-image: url('../js/widgets/report/images/icon.png');
+    font-size: 16px;
 }
 
 .esriCTSelectionOptionsContainerDisabled {
@@ -422,8 +422,7 @@ table {
     margin: 9px 0px;
 }
 
-.esriCTCloseGeoFormButton
-{
+.esriCTCloseGeoFormButton {
     height: 35px;
     width: 35px;
     background-color: rgba(0, 0, 0, 0.30);
@@ -1108,8 +1107,7 @@ table {
 /** Webmap list panel ends **/
 
 /** Report widget starts **/
-.esriCTReportWidgetParentContainer
-{
+.esriCTReportWidgetParentContainer {
   height: calc(100% - 50px);
   float: right;
   width: 30%;
@@ -1122,8 +1120,7 @@ table {
 
 /** GeoForm panel starts **/
 
-.esriCTGeoFormParentContainer
-{
+.esriCTGeoFormParentContainer {
   height: calc(100% - 50px);
   float: right;
   width: 30%;
@@ -1135,8 +1132,7 @@ table {
 
 /* Geo-form styles*/
 
-.esriCTGeoFormBody
-{
+.esriCTGeoFormBody {
     overflow-y: auto;
     height: calc(100% - 60px);
     -webkit-overflow-scrolling: touch;
@@ -1144,69 +1140,59 @@ table {
     width: 100%;
 }
 
-.esriCTGeoFormTitles
-{
+.esriCTGeoFormTitles {
     margin: 5px 0 5px 0;
     font-size: 18px;
     font-weight: bold !important;
 }
 
 
-.esriCTGeoFormContainer
-{
+.esriCTGeoFormContainer {
     margin: 0 auto !important;
     width: 100% !important;
     background: #EDEDED;
     height: 100%;
 }
 
-.esriCTRequireFieldStyle
-{
+.esriCTRequireFieldStyle {
     display: inline-block;
     margin-left: 5px;
     font-weight: normal;
     font-size: 100%;
 }
 
-.esriCTGeoFormHeaderText
-{
+.esriCTGeoFormHeaderText {
     width: calc(100% - 50px);
 }
 
-label
-{
+label {
     font-weight: normal !important;
     font-size: 14px;
 }
 
-.row
-{
+.row {
     margin: 0 !important;
 }
 
-.form-control
-{
+.form-control {
     border-radius: 0px !important;
     font-size: 12px;
     font-family: Verdana;
     resize: none !important;
 }
 
-.btn, .input-group-addon
-{
+.btn, .input-group-addon {
     border-radius: 0px !important;
 }
 
-.esriCTListHeader
-{
+.esriCTListHeader {
     height: 35px;
     color: #fff;
     font-size: 16px;
     font-weight: bold;
 }
 
-.esriCTCloseButton
-{
+.esriCTCloseButton {
     float: right;
     background-image: url(../images/close-24.png );
     height: 24px;
@@ -1217,13 +1203,11 @@ label
     background-repeat: no-repeat;
 }
 
-.help-block
-{
+.help-block {
     margin-left: 1px;
 }
 
-.esriCTHideFileInputUI
-{
+.esriCTHideFileInputUI {
     position: absolute;
     top: 0;
     filter: alpha(opacity = 0);
@@ -1232,35 +1216,30 @@ label
     opacity: 0;
 }
 
-.esriCTFileAttachMentList
-{
+.esriCTFileAttachMentList {
     padding-top: 10px;
     float: left;
     width: 100%;
 }
 
-.esriCTFileButtonContainer
-{
+.esriCTFileButtonContainer {
     float: left;
     position: relative;
 }
 
-.esriCTAttachmentSelectedCount
-{
+.esriCTAttachmentSelectedCount {
     float: left;
     margin-top: 6px;
     margin-left: 10px;
 }
 
-.esriCTAttachmentContainer
-{
+.esriCTAttachmentContainer {
     word-wrap: break-all;
     width: 100%;
     clear: both;
 }
 
-.esriCTGeoFormAttachmentLabel
-{
+.esriCTGeoFormAttachmentLabel {
     position: relative;
     width: 100%;
 }
@@ -1269,40 +1248,34 @@ label
     padding: 0px 10px 0px 10px;
 }
 
-.esriCTSuccessMsg
-{
+.esriCTSuccessMsg {
     margin: 10px;
     position: relative;
 }
 
-.esriCTSuccessMsgClose
-{
+.esriCTSuccessMsgClose {
     position: absolute;
     top: 10px;
     right: 10px;
 }
 
-.esriCTGeoFormButton
-{
+.esriCTGeoFormButton {
     border-radius: 0px !important;
     height: 35px;
     font-size: 14px;
     font-family: Verdana;
 }
 
-.esriCTGeoLocation
-{
+.esriCTGeoLocation {
     position: absolute;
 }
 
-.esriCTlocationPanel
-{
+.esriCTlocationPanel {
     padding: 0px !important;
     width: calc(100% - 50px);
 }
 
-.esriCTGeoFormLoader
-{
+.esriCTGeoFormLoader {
     top: 1px;
     height: calc(100% - 1px);
     width: 100%;
@@ -1311,37 +1284,32 @@ label
     background: #EDEDED;
 }
 
-.esriCTLocateContainer div.input-group
-{
+.esriCTLocateContainer div.input-group {
     width: 100%;
 }
 
-.esriCTLocateContainer div.input-group-btn
-{
+.esriCTLocateContainer div.input-group-btn {
     position: absolute;
     right: 36px;
+    top: 5px;
     z-index: 100;
 }
 
-.esriCTTxtSearch
-{
+.esriCTTxtSearch {
     padding-right: 70px;
 }
 
-.esriCTGeoFormMapContainer
-{
+.esriCTGeoFormMapContainer {
     height: 280px !important;
     width: 100% !important;
 }
 
-.esriCTmapParentContainer
-{
+.esriCTmapParentContainer {
     width: 94%;
     margin: 0 3% 15px 3%;
 }
 
-.esriCTReportButton
-{
+.esriCTReportButton {
     height: 35px;
     text-align: center;
     text-overflow: ellipsis;
@@ -1352,16 +1320,14 @@ label
     display: inline-block;
 }
 
-.esriCTReportButtonContainer
-{
+.esriCTReportButtonContainer {
     line-height: 35px;
     margin: 0px 10px 0px 10px;
     display: inline-block;
     max-width: 100%;
 }
 
-.esriCTReportButtonIcon
-{
+.esriCTReportButtonIcon {
     float: left;
     background-image: url("../images/report-button-icon.png");
     background-size: 19px;
@@ -1373,8 +1339,7 @@ label
     margin-left: 5px;
 }
 
-.esriCTReportButtonText
-{
+.esriCTReportButtonText {
     padding-left: 11px;
     min-width: calc(100% - 25px);
     text-overflow: ellipsis;
@@ -1382,20 +1347,17 @@ label
     overflow: hidden;
 }
 
-.esriCTGeoFormCancelButton
-{
+.esriCTGeoFormCancelButton {
     width: 48%;
     float: right;
 }
 
-.esriCTGeoFormSubmitButton
-{
+.esriCTGeoFormSubmitButton {
     width: 48%;
     float: left;
 }
 
-.esriCTGeoFormGeoLocation
-{
+.esriCTGeoFormGeoLocation {
     height: 32px;
     width: 34px;
     margin-left: 4px;
@@ -1406,8 +1368,7 @@ label
     margin-top: 1px;
 }
 
-.esriCTGeoFormBody .esriCTMapGeoLocationContainer, .esriCTLocatorSearchButton
-{
+.esriCTGeoFormBody .esriCTMapGeoLocationContainer, .esriCTLocatorSearchButton {
     background-color: #fff;
 }
 /* End of geo-form styles*/
@@ -1416,8 +1377,7 @@ label
 
 /** Query widget container starts **/
 
-.esriCTQueryWidgetContainer
-{
+.esriCTQueryWidgetContainer {
     margin: 0 auto !important;
     width: 100% !important;
     background: #EDEDED;
@@ -1427,15 +1387,13 @@ label
 /** Query widget container ends**/
 
 /* Start of map search container styles */
-.esriSimpleSlider .esriCTSearchButton
-{
+.esriSimpleSlider .esriCTSearchButton {
     background: url('../images/search.png') center;
     background-size: 30px;
     border-left: none !important;
 }
 
-.esriSimpleSlider .search, .esriSimpleSlider .search div
-{
+.esriSimpleSlider .search, .esriSimpleSlider .search div {
     font-size: 12px;
     color: #666;
     text-align: left;
@@ -1443,38 +1401,32 @@ label
     height: 31px;
 }
 
-.esriSimpleSlider .search .esriCTAddressListContainer
-{
+.esriSimpleSlider .search .esriCTAddressListContainer {
     width: 90%;
     height: auto;
     float: left;
 }
 
-.esriSimpleSlider .search
-{
+.esriSimpleSlider .search {
     margin-top: 9px;
 }
-.esriSimpleSlider .esriCTTxtSearch
-{
+.esriSimpleSlider .esriCTTxtSearch {
     height: 33px;
     width: 0;
     display: none;
 }
 
-.esriSimpleSlider .esriCTMapSearchContainer .input-group-btn
-{
+.esriSimpleSlider .esriCTMapSearchContainer .input-group-btn {
     right: -5px;
 }
 
-.esriSimpleSlider .esriCTMapSearchContainer .esriCTSearchClose
-{
+.esriSimpleSlider .esriCTMapSearchContainer .esriCTSearchClose {
     right: 32px;
     top: 4px;
     display: none;
 }
 
-.esriSimpleSlider .esriCTMapSearchContainer .esriCTResultContainer
-{
+.esriSimpleSlider .esriCTMapSearchContainer .esriCTResultContainer {
     min-width: 231px;
     height: 100%;
     position: absolute;
@@ -1482,47 +1434,39 @@ label
     -webkit-overflow-scrolling: touch;
 }
 
-.esriSimpleSlider .esriCTMapSearchContainer .esriCTDivNoResultFound
-{
+.esriSimpleSlider .esriCTMapSearchContainer .esriCTDivNoResultFound {
     float: left;
     width: 90%;
 }
 
-.esriSimpleSlider .esriCTMapSearchContainer .esriCTCandidateList
-{
+.esriSimpleSlider .esriCTMapSearchContainer .esriCTCandidateList {
     min-width: 197px;
 }
 
-.esriSimpleSlider .esriCTMapSearchContainer .esriCTSearchGroupCell
-{
+.esriSimpleSlider .esriCTMapSearchContainer .esriCTSearchGroupCell {
     min-width: 205px;
 }
 
 
-.esriSimpleSlider .esriCTMapSearchContainer
-{
+.esriSimpleSlider .esriCTMapSearchContainer {
     margin-top: 0px !important;
 }
 
-.esriSimpleSlider .esriCTLocatorSearchButton
-{
+.esriSimpleSlider .esriCTLocatorSearchButton {
     margin-left: -5px;
     height: 31px;
 }
 
-.esriSimpleSlider .esriCTSearchButton
-{
+.esriSimpleSlider .esriCTSearchButton {
     height: 31px !important;
     width: 32px !important;
     position: absolute;
 }
-.esriSimpleSlider .esriCTTxtMapSearch
-{
+.esriSimpleSlider .esriCTTxtMapSearch {
     display: none;
 }
 
-.esriCTHelpIcon
-{
+.esriCTHelpIcon {
     background-image: url("../images/help.png");
     height: 18px;
     width: 18px;
@@ -1533,83 +1477,74 @@ label
     margin-left: 10px;
 }
 
-.modal-header
-{
+.modal-header {
     border-color: #555;
 }
 
-.esriCTModelDialog .modal-body
-{
+.esriCTModelDialog .modal-body {
     overflow: auto;
     height: 250px;
     margin-bottom: 15px;
 }
 
-.esriCTModelDialog
-{
+.esriCTModelDialog {
     top: 150px;
 }
 
-.esriCTClose
-{
+.esriCTClose {
     opacity: 1;
     padding: 2px;
 }
 
-.esriCTClose:hover
-{
+.esriCTClose:hover {
     opacity: 1;
 }
 
-.esriCTCloseHelpWindow
-{
-    background: url('../images/closeHelp.png') no-repeat center;
-    background-size: 18px;
+.esriCTCloseHelpWindow {
+    height: 18px;
+    width: 18px;
+    cursor: pointer;
     margin-top: 5px;
+    font-size: 18px;
+    text-shadow: none;
 }
 
-.esriCTIncrementButton
-{
+.esriCTIncrementButton {
     width: 32px;
     height: 31px;
     background-image: url('../images/increment.png');
     background-size: 32px 31px;
 }
 
-.esriCTDecrementButton
-{
+.esriCTDecrementButton {
     width: 32px;
     height: 31px;
     background-image: url('../images/decrement.png');
     background-size: 32px 31px;
 }
 
-.esriSimpleSliderIncrementButton.esriCTIncrementButton.esriCTPointerCursor.esriSimpleSliderDisabledButton
-{
+.esriSimpleSliderIncrementButton.esriCTIncrementButton.esriCTPointerCursor.esriSimpleSliderDisabledButton {
     width: 32px;
     height: 31px;
     background-image: url('../images/increment-disabled.png') !important;
     background-size: 32px 31px;
 }
 
-.esriSimpleSliderDecrementButton.esriCTDecrementButton.esriCTPointerCursor.esriSimpleSliderDisabledButton
-{
+.esriSimpleSliderDecrementButton.esriCTDecrementButton.esriCTPointerCursor.esriSimpleSliderDisabledButton {
     width: 32px;
     height: 31px;
     background-image: url('../images/decrement-disabled.png') !important;
     background-size: 32px 31px;
 }
 
-.modal-title
-{
+.modal-title {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     width: 85%;
 }
 
-.modal-header
-{
+.modal-header {
     min-height: 56px;
 }
 

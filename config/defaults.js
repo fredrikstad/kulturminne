@@ -127,6 +127,8 @@ define({
     "popupFormAttachmentSectionLabel": "Attachments",
     // to show as a label for attachment section in inspections form where attachments can be added
     "inspectionFormAttachmentSectionLabel": "Attachments",
+    // to show as a label for attachment section in omsetning form where attachments can be added
+    "omsetningFormAttachmentSectionLabel": "Attachments",
     // to show as a label for attachment section in comments form where attachments can be added
     "commentFormAttachmentSectionLabel": "Attachments",
     // configurable message to indicate that the user has sucessfully submitted a new report

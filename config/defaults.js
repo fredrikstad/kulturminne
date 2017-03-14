@@ -62,7 +62,7 @@ define({
     // to display any null values
     "showNullValueAs": "",
     // to set zoom level of map when single feature is selected
-    "zoomLevel": 10,
+    "zoomLevel": 12,
     // when web-map thumbnail icon is not available it will get replaced by this default icon
     "noThumbnailIcon": "/images/default-webmap-thumbnail.png",
     // when attachment is not available it will get replaced by this default icon
